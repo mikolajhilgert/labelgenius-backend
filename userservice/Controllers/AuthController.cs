@@ -12,23 +12,23 @@ namespace userservice.Controllers
         { this._authService = authService; }
 
         [HttpPost("/api/auth/register")]
-        public async Task<ActionResult<Tuple<bool, string>>> Register(UserRegisterDto userDto)
+        public async Task<ActionResult<(bool, string)>> Register(UserRegisterDto userDto)
         {
             // Check if model is valid
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
             try
             {
-                Tuple<bool, string> result = await _authService.RegisterUser(userDto);
-                if (result.Item1) return Ok("Registration successful, please verify your email!");
-                return BadRequest(result.Item2);
+                var result = await _authService.RegisterUser(userDto);
+                if (result.Result) return Ok("Registration successful, please verify your email!");
+                return BadRequest(result.Message);
             }
             catch (FirebaseAuthException ex)
             {
                 switch (ex.Reason)
                 {
                     case AuthErrorReason.EmailExists:
-                        return BadRequest("A  user with this email already exists. Try logging in.");
+                        return BadRequest("A user with this email already exists. Please try logging in.");
                     case AuthErrorReason.WeakPassword:
                         return BadRequest("Password is not strong enough. Your password must be more than 6 characters.");
                 }
@@ -43,13 +43,14 @@ namespace userservice.Controllers
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
             var firebaseAuth = await _authService.LoginUser(userDto);
-            if (!firebaseAuth.Item1)
+            if (!firebaseAuth.Result)
             {
-                return BadRequest(firebaseAuth.Item2);
+                return BadRequest(firebaseAuth.Message);
             }
             else
             {
-                return Ok("accessToken: " + firebaseAuth.Item3.IdToken + "\n" + "refreshToken: " + firebaseAuth.Item3.RefreshToken);
+                var credential = firebaseAuth.Credential;
+                return Ok("accessToken: " + credential.IdToken + "\n refreshToken: " + credential.RefreshToken);
             }
         }
     }

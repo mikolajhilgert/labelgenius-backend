@@ -8,7 +8,7 @@ namespace userservice.Repositories
     {
         IMongoCollection<User> GetUserCollection();
         Task<User> GetUserByEmail(string userEmail);
-        Task<Tuple<bool, string>> SaveUser(UserRegisterDto userDto, string firebaseId);
+        Task<(bool Result, string Message)> SaveUser(UserRegisterDto userDto, string firebaseId);
         Task<bool> DeleteUser(string userEmail);
     }
 }
