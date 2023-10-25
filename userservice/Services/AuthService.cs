@@ -15,25 +15,25 @@ namespace userservice.Services
             this._firebaseAuthClient = firebaseAuthClient;
             this._userRepository = userRepository;
         }
-        public async Task<Tuple<bool, string, FirebaseCredential>> LoginUser(UserLoginDto userDto)
+        public async Task<(bool, string, FirebaseCredential)> LoginUser(UserLoginDto userDto)
         {
             try
             {
                 var auth = await _firebaseAuthClient.SignInWithEmailAndPasswordAsync(userDto.Email, userDto.Password);
                 if (!auth.User.Info.IsEmailVerified)
                 {
-                    return new Tuple<bool, string, FirebaseCredential>(false, "Your email address has not been verified", new());
+                    return (false, "Your email address has not been verified", new());
                 }
 
-                return new Tuple<bool, string, FirebaseCredential>(true, "Sign-in successful", auth.User.Credential);
+                return (true, "Sign-in successful", auth.User.Credential);
             }
             catch (Exception e)
             {
-                return new Tuple<bool, string, FirebaseCredential>(false, e.Message, new());
+                return (false, e.Message, new());
             }
         }
 
-        public async Task<Tuple<bool, string>> RegisterUser(UserRegisterDto userDto)
+        public async Task<(bool Result, string Message)> RegisterUser(UserRegisterDto userDto)
         {
             UserCredential firebaseUserCredential = await _firebaseAuthClient.CreateUserWithEmailAndPasswordAsync(userDto.Email, userDto.Password);
             await SendVerificationEmailAsync(firebaseUserCredential);

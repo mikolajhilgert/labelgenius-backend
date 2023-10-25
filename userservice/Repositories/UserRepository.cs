@@ -25,28 +25,21 @@ namespace userservice.Repositories
         {
             return _users.DeleteOneAsync(user => user.Email == userEmail).ContinueWith(task => task.Result.DeletedCount == 1);
         }
-        public Task<Tuple<bool, string>> SaveUser(UserRegisterDto userDto, string firebaseId)
-
+        public async Task<(bool Result, string Message)> SaveUser(UserRegisterDto userDto, string firebaseId)
         {
-            return _users.Find(user => user.Email == userDto.Email).FirstOrDefaultAsync().ContinueWith(task =>
+            var existingUser = await _users.Find(user => user.Email == userDto.Email).FirstOrDefaultAsync();
+            if (existingUser != null)
             {
-                if (task.Result != null)
-                {
-                    return new Tuple<bool, string>(false, "A user with this email already exist. try to log-in instead");
-                }
-                else
-                {
-                    User user = new User
-                    {
-                        Id = firebaseId,
-                        Email = userDto.Email,
-                        Name = userDto.Name
-
-                    };
-                    _users.InsertOneAsync(user);
-                    return new Tuple<bool, string>(true, "Registration successful, please verify your email!");
-                }
-            }); 
+                return (false, "A user with this email already exists. Try to log-in instead");
+            }
+            User user = new()
+            {
+                Id = firebaseId,
+                Email = userDto.Email,
+                Name = userDto.Name
+            };
+            await _users.InsertOneAsync(user);
+            return (true, "Registration successful, please verify your email!");
         }
     }
 }
