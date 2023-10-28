@@ -40,7 +40,7 @@ namespace userservice.Controllers
         public async Task<IActionResult> Login(UserLoginDto userDto)
         {
             // Check if model is valid
-            // if (!ModelState.IsValid) return BadRequest(ModelState);
+            if (!ModelState.IsValid) return BadRequest(ModelState);
 
             var firebaseAuth = await _authService.LoginUser(userDto);
             if (!firebaseAuth.Result)
