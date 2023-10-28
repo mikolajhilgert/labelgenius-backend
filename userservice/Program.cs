@@ -1,17 +1,19 @@
 using Firebase.Auth;
 using Firebase.Auth.Providers;
 using FirebaseAdmin;
-using Google.Apis.Auth.OAuth2;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authentication;
 using MongoDB.Driver;
 using userservice.Repositories;
 using userservice.Services;
+using authentication;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddSingleton(FirebaseApp.Create(new AppOptions
+if (FirebaseApp.DefaultInstance == null)
 {
-    Credential = GoogleCredential.FromFile("firebase.json")
-}));
+    builder.Services.AddSingleton(FirebaseApp.Create());
+}
 
 builder.Services.AddSingleton<IMongoClient>(s =>
         new MongoClient(builder.Configuration.GetValue<string>("UserDbSettings:ConnectionString")));
@@ -29,7 +31,24 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(); 
+builder.Services.AddSwaggerGen();
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddScheme<AuthenticationSchemeOptions, FirebaseAuthenticationHandler>(JwtBearerDefaults.AuthenticationScheme, (o) =>
+    {
+        o.Events = new JwtBearerEvents
+        {
+            OnMessageReceived = context =>
+            {
+                context.Token = context.Request.Cookies["token"];
+                return Task.CompletedTask;
+            }
+        };
+    }
+    ).AddCookie(value =>
+    {
+        value.Cookie.Name = "token";
+    });
 
 var app = builder.Build();
 

@@ -19,7 +19,7 @@ namespace userservice.Services
         {
             try
             {
-                var auth = await _firebaseAuthClient.SignInWithEmailAndPasswordAsync(userDto.Email, userDto.Password);
+                var auth = await _firebaseAuthClient.SignInWithEmailAndPasswordAsync(userDto.Email, userDto.Password)
                 if (!auth.User.Info.IsEmailVerified)
                 {
                     return (false, "Your email address has not been verified", new());

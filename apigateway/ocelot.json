@@ -1,29 +1,38 @@
 {
   "Routes": [
-    // Auth service
+    // User service
     {
-      "DownstreamPathTemplate": "/api/auth/register",
+      "UpstreamPathTemplate": "/api/auth/login",
+      "UpstreamHttpMethod": [ "Post" ],
+
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "userservice-host",
+          "Host": "userservice",
           "Port": 80
         }
       ],
-      "UpstreamPathTemplate": "/api/auth/register",
-      "UpstreamHttpMethod": [ "Post" ]
+      "LoadBalancerOptions": {
+        "Type": "RoundRobin"
+      },
+      "DownstreamPathTemplate": "/api/auth/login",
+      "DownstreamHttpMethod": "POST"
     },
     {
-      "DownstreamPathTemplate": "/api/auth/login",
+      "UpstreamPathTemplate": "/api/auth/register",
+      "UpstreamHttpMethod": [ "Post" ],
+
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "userservice-host",
+          "Host": "userservice",
           "Port": 80
         }
       ],
-      "UpstreamPathTemplate": "/api/auth/login",
-      "UpstreamHttpMethod": [ "Post" ]
+      "LoadBalancerOptions": {
+        "Type": "RoundRobin"
+      },
+      "DownstreamPathTemplate": "/api/auth/register"
     }
   ],
   "GlobalConfiguration": {

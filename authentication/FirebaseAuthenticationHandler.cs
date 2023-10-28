@@ -17,10 +17,7 @@ namespace authentication
         public FirebaseAuthenticationHandler(IOptionsMonitor<AuthenticationSchemeOptions> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock)
             : base(options, logger, encoder, clock)
         {
-            _firebaseApp = FirebaseApp.Create(new AppOptions
-            {
-                Credential = GoogleCredential.FromFile("firebase.json")
-            });
+            _firebaseApp = (FirebaseApp.DefaultInstance == null) ? FirebaseApp.Create() : FirebaseApp.DefaultInstance;
         }
 
         protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
