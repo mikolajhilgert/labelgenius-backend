@@ -7,6 +7,9 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
+# Add Authentication to the container
+COPY ./NuGet.Config /nuget.config
+COPY LabelGenius.Authentication.1.0.0.nupkg .
 COPY ["userservice.csproj", "."]
 RUN dotnet restore "./userservice.csproj"
 COPY . .
