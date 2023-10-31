@@ -49,7 +49,7 @@ jobs:
     env:
       DOCKER_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKER_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
-      DOCKER_REPO: labelgenius
+      DOCKER_REPO: ${{ secrets.DOCKERHUB_USERNAME }}
 
     steps:
       - name: Checkout
