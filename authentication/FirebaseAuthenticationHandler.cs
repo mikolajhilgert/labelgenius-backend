@@ -1,6 +1,5 @@
 ﻿using FirebaseAdmin;
 using FirebaseAdmin.Auth;
-using Google.Apis.Auth.OAuth2;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Logging;
@@ -17,7 +16,7 @@ namespace authentication
         public FirebaseAuthenticationHandler(IOptionsMonitor<AuthenticationSchemeOptions> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock)
             : base(options, logger, encoder, clock)
         {
-            _firebaseApp = (FirebaseApp.DefaultInstance == null) ? FirebaseApp.Create() : FirebaseApp.DefaultInstance;
+            _firebaseApp = FirebaseApp.DefaultInstance ?? FirebaseApp.Create();
         }
 
         protected override async Task<AuthenticateResult> HandleAuthenticateAsync()

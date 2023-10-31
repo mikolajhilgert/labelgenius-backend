@@ -5,13 +5,16 @@ using userservice.Services;
 
 namespace userservice.Controllers
 {
+    [Route("api/auth")]
+    [ApiController]
     public class AuthController : Controller
     {
+
         private readonly IAuthService _authService;
         public AuthController(IAuthService authService)
-        { this._authService = authService; }
+        { _authService = authService; }
 
-        [HttpPost("/api/auth/register")]
+        [HttpPost("register")]
         public async Task<ActionResult<(bool, string)>> Register(UserRegisterDto userDto)
         {
             // Check if model is valid
@@ -19,9 +22,9 @@ namespace userservice.Controllers
 
             try
             {
-                var result = await _authService.RegisterUser(userDto);
-                if (result.Result) return Ok("Registration successful, please verify your email!");
-                return BadRequest(result.Message);
+                var (Result, Message) = await _authService.RegisterUser(userDto);
+                if (Result) return Ok("Registration successful, please verify your email!");
+                return BadRequest(Message);
             }
             catch (FirebaseAuthException ex)
             {
@@ -36,21 +39,30 @@ namespace userservice.Controllers
             }
         }
 
-        [HttpPost("/api/auth/login")]
+        [HttpPost("login")]
         public async Task<IActionResult> Login(UserLoginDto userDto)
         {
             // Check if model is valid
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            var firebaseAuth = await _authService.LoginUser(userDto);
-            if (!firebaseAuth.Result)
+            var (Result, Message, Credential) = await _authService.LoginUser(userDto);
+            if (!Result)
             {
-                return BadRequest(firebaseAuth.Message);
+                return BadRequest(Message);
             }
             else
             {
-                var credential = firebaseAuth.Credential;
-                return Ok("accessToken: " + credential.IdToken + "\n refreshToken: " + credential.RefreshToken);
+                HttpContext.Response.Cookies.Append("token", Credential.IdToken,
+                    new CookieOptions
+                    {
+                        Expires = DateTime.Now.AddMinutes(30),
+                        HttpOnly = true,
+                        Secure = true,
+                        IsEssential = true,
+                        SameSite = SameSiteMode.None
+                    });
+                return Ok("You have successfully logged in!");
+
             }
         }
     }
