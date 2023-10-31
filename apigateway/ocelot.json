@@ -1,6 +1,5 @@
 {
   "Routes": [
-    // User service
     {
       "UpstreamPathTemplate": "/api/auth/login",
       "UpstreamHttpMethod": [ "Post" ],
@@ -33,6 +32,22 @@
         "Type": "RoundRobin"
       },
       "DownstreamPathTemplate": "/api/auth/register"
+    },
+    {
+      "UpstreamPathTemplate": "/api/me/delete",
+      "UpstreamHttpMethod": [ "Post" ],
+
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "userservice",
+          "Port": 80
+        }
+      ],
+      "LoadBalancerOptions": {
+        "Type": "RoundRobin"
+      },
+      "DownstreamPathTemplate": "/api/me/delete"
     }
   ],
   "GlobalConfiguration": {

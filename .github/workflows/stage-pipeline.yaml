@@ -1,0 +1,73 @@
+name: Stage
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Set up .NET SDK
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 6.0.x
+
+      - name: Build API Gateway
+        run: |
+          cd ./apigateway
+          dotnet restore
+          dotnet build
+
+      - name: Build UserService
+        run: |
+          cd ./userservice
+          dotnet restore
+          dotnet build
+
+      - name: Build ProjectService
+        run: |
+          cd ./projectservice
+          dotnet restore
+          dotnet build
+
+  unit-test:
+    needs: build
+    runs-on: ubuntu-latest
+
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    needs: unit-test
+    env:
+      DOCKER_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKER_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
+      DOCKER_REPO: labelgenius
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Login to Docker Hub
+        run: echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
+
+      - name: Build and Push Docker Images
+        run: |
+          cd ./apigateway
+          docker build -t $DOCKER_REPO/apigateway:latest .
+          docker push $DOCKER_REPO/apigateway:latest
+
+          cd ../userservice
+          docker build -t $DOCKER_REPO/userservice:latest .
+          docker push $DOCKER_REPO/userservice:latest
+
+          cd ../projectservice
+          docker build -t $DOCKER_REPO/projectservice:latest .
+          docker push $DOCKER_REPO/projectservice:latest

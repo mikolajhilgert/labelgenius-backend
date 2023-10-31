@@ -1,5 +1,7 @@
 ﻿using Firebase.Auth;
+using Newtonsoft.Json;
 using System.Net.Http.Headers;
+using System.Text;
 using userservice.Dto;
 
 namespace userservice.Services
@@ -9,17 +11,21 @@ namespace userservice.Services
         private readonly IConfiguration _config;
         private readonly IFirebaseAuthClient _firebaseAuthClient;
         private readonly Repositories.IUserRepository _userRepository;
-        public AuthService(IConfiguration config, IFirebaseAuthClient firebaseAuthClient, Repositories.IUserRepository userRepository)
+        private readonly ILogger<AuthService> _logger;
+
+        public AuthService(IConfiguration config, IFirebaseAuthClient firebaseAuthClient, Repositories.IUserRepository userRepository, ILogger<AuthService> logger)
         {
-            this._config = config;
-            this._firebaseAuthClient = firebaseAuthClient;
-            this._userRepository = userRepository;
+            _config = config;
+            _firebaseAuthClient = firebaseAuthClient;
+            _userRepository = userRepository;
+            _logger = logger;
         }
+
         public async Task<(bool, string, FirebaseCredential)> LoginUser(UserLoginDto userDto)
         {
             try
             {
-                var auth = await _firebaseAuthClient.SignInWithEmailAndPasswordAsync(userDto.Email, userDto.Password)
+                var auth = await _firebaseAuthClient.SignInWithEmailAndPasswordAsync(userDto.Email, userDto.Password);
                 if (!auth.User.Info.IsEmailVerified)
                 {
                     return (false, "Your email address has not been verified", new());
@@ -42,17 +48,24 @@ namespace userservice.Services
 
         private async Task SendVerificationEmailAsync(UserCredential firebaseUserCredential)
         {
-            string tokenId = await firebaseUserCredential.User.GetIdTokenAsync();
-            string RequestUri = "https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=" + _config.GetSection("FirebaseSettings:apiKey").Value;
-            using (var client = new HttpClient())
+            try
             {
+                string apiKey = _config.GetSection("FirebaseSettings:apiKey").Value;
+                string RequestUri = $"https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key={apiKey}";
+
+                using var client = new HttpClient();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-                var content = new StringContent("{\"requestType\":\"VERIFY_EMAIL\",\"idToken\":\"" + tokenId + "\"}");
-                content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                var requestData = new { requestType = "VERIFY_EMAIL", idToken = await firebaseUserCredential.User.GetIdTokenAsync() };
+                string jsonData = JsonConvert.SerializeObject(requestData);
+                var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
 
                 var response = await client.PostAsync(RequestUri, content);
                 response.EnsureSuccessStatusCode();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while making the HTTP request to send verification email.");
             }
         }
     }

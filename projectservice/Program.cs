@@ -1,12 +1,8 @@
-using Firebase.Auth;
-using Firebase.Auth.Providers;
+using authentication;
 using FirebaseAdmin;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authentication;
 using MongoDB.Driver;
-using userservice.Repositories;
-using userservice.Services;
-using authentication;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,18 +13,6 @@ if (FirebaseApp.DefaultInstance == null)
 
 builder.Services.AddSingleton<IMongoClient>(s =>
         new MongoClient(builder.Configuration.GetValue<string>("UserDbSettings:ConnectionString")));
-
-builder.Services.AddSingleton<IFirebaseAuthClient>(s => new FirebaseAuthClient(new FirebaseAuthConfig
-{
-    ApiKey = builder.Configuration.GetValue<string>("FirebaseSettings:apiKey"),
-    AuthDomain = builder.Configuration.GetValue<string>("FirebaseSettings:authDomain"),
-    Providers = new FirebaseAuthProvider[] { new EmailProvider() }
-}));
-
-// Add services
-builder.Services.AddSingleton<IUserRepository, UserRepository>();
-builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
