@@ -10,13 +10,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Azure.Messaging.EventHubs" Version="5.9.3" />
     <PackageReference Include="FirebaseAdmin" Version="2.4.0" />
     <PackageReference Include="FirebaseAuthentication.net" Version="4.1.0" />
-    <PackageReference Include="LabelGenius.Authentication" Version="1.0.0" />
+    <PackageReference Include="LabelGenius.Authentication" Version="0.0.1" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.5" />
     <PackageReference Include="MongoDB.Bson" Version="2.22.0" />
     <PackageReference Include="MongoDB.Driver" Version="2.22.0" />
