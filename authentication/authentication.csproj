@@ -7,6 +7,9 @@
     <Title>LabelGeniusAuth</Title>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <PackageId>LabelGenius.Authentication</PackageId>
+    <Authors>Mikolaj Hilgert</Authors>
+    <Version>0.0.1</Version>
+    <RepositoryUrl>https://github.com/mikolajhilgert/labelgenius-backend/tree/main/authentication</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>
