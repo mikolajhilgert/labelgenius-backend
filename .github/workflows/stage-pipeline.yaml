@@ -69,9 +69,9 @@ jobs:
           docker push $DOCKER_USERNAME/apigateway:latest
 
           cd ../userservice
-          docker build -t $DOCKER_USERNAME/userservice:latest --build-arg GITHUB_USERNAME=$GITHUB_USERNAME --build-arg GITHUB_PAT=$GITHUB_TOKEN .
+          docker build -t $DOCKER_USERNAME/userservice:latest --build-arg GITHUB_USERNAME=$GITHUB_USERNAME --build-arg GITHUB_TOKEN=$GITHUB_TOKEN .
           docker push $DOCKER_USERNAME/userservice:latest
 
           cd ../projectservice
-          docker build -t $DOCKER_USERNAME/projectservice:latest --build-arg GITHUB_USERNAME=$GITHUB_USERNAME --build-arg GITHUB_PAT=$GITHUB_TOKEN .
+          docker build -t $DOCKER_USERNAME/projectservice:latest --build-arg GITHUB_USERNAME=$GITHUB_USERNAME --build-arg GITHUB_TOKEN=$GITHUB_TOKEN .
           docker push $DOCKER_USERNAME/projectservice:latest
