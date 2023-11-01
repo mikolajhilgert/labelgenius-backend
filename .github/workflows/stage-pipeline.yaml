@@ -27,12 +27,14 @@ jobs:
       - name: Build UserService
         run: |
           cd ./userservice
+          dotnet add package LabelGenius.Authentication --version 0.0.1 
           dotnet restore
           dotnet build
 
       - name: Build ProjectService
         run: |
           cd ./projectservice
+          dotnet add package LabelGenius.Authentication --version 0.0.1 
           dotnet restore
           dotnet build
 
