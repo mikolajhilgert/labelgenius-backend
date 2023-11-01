@@ -26,7 +26,7 @@ builder.Services.AddSingleton<IFirebaseAuthClient>(s => new FirebaseAuthClient(n
 }));
 
 // Add services
-builder.Services.AddSingleton<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
 

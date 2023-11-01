@@ -49,7 +49,8 @@ jobs:
     env:
       DOCKER_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKER_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
-      DOCKER_REPO: ${{ secrets.DOCKERHUB_USERNAME }}
+      GITHUB_USERNAME: ${{ secrets.GITHUB_USERNAME }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
       - name: Checkout
@@ -64,13 +65,13 @@ jobs:
       - name: Build and Push Docker Images
         run: |
           cd ./apigateway
-          docker build -t $DOCKER_REPO/apigateway:latest .
-          docker push $DOCKER_REPO/apigateway:latest
+          docker build -t $DOCKER_USERNAME/apigateway:latest .
+          docker push $DOCKER_USERNAME/apigateway:latest
 
           cd ../userservice
-          docker build -t $DOCKER_REPO/userservice:latest .
-          docker push $DOCKER_REPO/userservice:latest
+          docker build -t $DOCKER_USERNAME/userservice:latest --build-arg GITHUB_USERNAME=$GITHUB_USERNAME --build-arg GITHUB_PAT=$GITHUB_TOKEN .
+          docker push $DOCKER_USERNAME/userservice:latest
 
           cd ../projectservice
-          docker build -t $DOCKER_REPO/projectservice:latest .
-          docker push $DOCKER_REPO/projectservice:latest
+          docker build -t $DOCKER_USERNAME/projectservice:latest --build-arg GITHUB_USERNAME=$GITHUB_USERNAME --build-arg GITHUB_PAT=$GITHUB_TOKEN .
+          docker push $DOCKER_USERNAME/projectservice:latest
