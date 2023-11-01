@@ -9,6 +9,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    env:
+      GITHUB_USERNAME: ${{ secrets.USERNAME_GITHUB }}
+      GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
+
     steps:
       - name: Checkout
         uses: actions/checkout@v2
