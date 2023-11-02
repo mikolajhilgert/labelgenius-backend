@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 services:
   apigateway:
@@ -19,6 +19,9 @@ services:
         - GITHUB_TOKEN=${GITHUB_TOKEN}
     environment:
       - GOOGLE_APPLICATION_CREDENTIALS=firebase.json
+    volumes:
+      - ./userservice/firebase.json:/app/firebase.json
+      - ./userservice/appsettings.json:/app/appsettings.json
     networks:
       - backend
 
@@ -31,6 +34,9 @@ services:
         - GITHUB_TOKEN=${GITHUB_TOKEN}
     environment:
       - GOOGLE_APPLICATION_CREDENTIALS=firebase.json
+    volumes:
+      - ./projectservice/firebase.json:/app/firebase.json
+      - ./projectservice/appsettings.json:/app/appsettings.json
     networks:
       - backend
 
