@@ -46,6 +46,19 @@ namespace userservice.Services
             return await _userRepository.SaveUser(userDto, firebaseUserCredential.User.Uid);
         }
 
+        public async Task<(bool Result, string Message)> ResetPassword(UserResetPasswordDto userDto)
+        {
+            try
+            {
+                await _firebaseAuthClient.ResetEmailPasswordAsync(userDto.Email);
+                return (true, "Password reset email sent");
+            }
+            catch (Exception e)
+            {
+                return (false, e.Message);
+            }
+        }
+
         private async Task SendVerificationEmailAsync(UserCredential firebaseUserCredential)
         {
             try

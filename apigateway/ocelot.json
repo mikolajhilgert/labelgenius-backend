@@ -18,6 +18,22 @@
       "DownstreamHttpMethod": "POST"
     },
     {
+      "UpstreamPathTemplate": "/api/auth/reset_password",
+      "UpstreamHttpMethod": [ "Post" ],
+
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "userservice",
+          "Port": 80
+        }
+      ],
+      "LoadBalancerOptions": {
+        "Type": "RoundRobin"
+      },
+      "DownstreamPathTemplate": "/api/auth/reset_password"
+    },
+    {
       "UpstreamPathTemplate": "/api/auth/register",
       "UpstreamHttpMethod": [ "Post" ],
 
