@@ -65,5 +65,22 @@ namespace userservice.Controllers
 
             }
         }
+
+        [HttpPost("reset_password")]
+        public async Task<IActionResult> ResetPassword(UserResetPasswordDto userDto)
+        {
+            // Check if model is valid
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            var (Result, Message) = await _authService.ResetPassword(userDto);
+            if (!Result)
+            {
+                return BadRequest(Message);
+            }
+            else
+            {
+                return Ok("Password reset email has been sent!");
+            }
+        }
     }
 }
