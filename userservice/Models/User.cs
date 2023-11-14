@@ -6,7 +6,7 @@ namespace userservice.Models
     public class User
     {
         [BsonId]
-        public ObjectId Id { get; set; } = ObjectId.Empty;
+        public string Id { get; set; } = string.Empty;
 
         [BsonElement("email")]
         public string Email { get; set; } = string.Empty;
