@@ -1,11 +1,12 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace userservice.Models
 {
     public class User
     {
         [BsonId]
-        public string Id { get; set; } = string.Empty;
+        public ObjectId Id { get; set; } = ObjectId.Empty;
 
         [BsonElement("email")]
         public string Email { get; set; } = string.Empty;
