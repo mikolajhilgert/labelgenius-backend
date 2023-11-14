@@ -1,5 +1,7 @@
 ﻿using Firebase.Auth;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using userservice.Dto;
 using userservice.Services;
 
@@ -11,8 +13,11 @@ namespace userservice.Controllers
     {
 
         private readonly IAuthService _authService;
-        public AuthController(IAuthService authService)
-        { _authService = authService; }
+        private readonly ILogger<AuthController> _logger;
+        public AuthController(IAuthService authService, ILogger<AuthController> logger)
+        { _authService = authService;
+            _logger = logger;
+        }
 
         [HttpPost("register")]
         public async Task<ActionResult<(bool, string)>> Register(UserRegisterDto userDto)
@@ -62,7 +67,6 @@ namespace userservice.Controllers
                         SameSite = SameSiteMode.None
                     });
                 return Ok("You have successfully logged in!");
-
             }
         }
 
@@ -81,6 +85,27 @@ namespace userservice.Controllers
             {
                 return Ok("Password reset email has been sent!");
             }
+        }
+
+        [Authorize(Roles = "User")]
+        [HttpGet("status")]
+        public ActionResult<string> Status()
+        {
+            // Retrieve the email claim from the user's claims
+            var emailClaim = (User.Identity as ClaimsIdentity)?.Claims.First(c => c.Type == "email");
+
+            if (emailClaim == null || string.IsNullOrEmpty(emailClaim.Value))
+            {
+                return BadRequest("User not logged in or does not exist");
+            }
+            return Ok("User is logged in");
+        }
+
+        [HttpPost("logout")]
+        public ActionResult<string> Logout()
+        {
+            HttpContext.Response.Cookies.Delete("token");
+            return Ok("You have successfully been logged out!");
         }
     }
 }

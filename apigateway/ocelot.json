@@ -2,7 +2,7 @@
   "Routes": [
     {
       "UpstreamPathTemplate": "/api/auth/login",
-      "UpstreamHttpMethod": [ "Post" ],
+      "UpstreamHttpMethod": ["Post"],
 
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
@@ -18,8 +18,8 @@
       "DownstreamHttpMethod": "POST"
     },
     {
-      "UpstreamPathTemplate": "/api/auth/reset_password",
-      "UpstreamHttpMethod": [ "Post" ],
+      "UpstreamPathTemplate": "/api/auth/logout",
+      "UpstreamHttpMethod": ["Post"],
 
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
@@ -31,11 +31,29 @@
       "LoadBalancerOptions": {
         "Type": "RoundRobin"
       },
-      "DownstreamPathTemplate": "/api/auth/reset_password"
+      "DownstreamPathTemplate": "/api/auth/logout",
+      "DownstreamHttpMethod": "POST"
+    },
+    {
+      "UpstreamPathTemplate": "/api/auth/reset_password",
+      "UpstreamHttpMethod": ["Post"],
+
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "userservice",
+          "Port": 80
+        }
+      ],
+      "LoadBalancerOptions": {
+        "Type": "RoundRobin"
+      },
+      "DownstreamPathTemplate": "/api/auth/reset_password",
+      "DownstreamHttpMethod": "POST"
     },
     {
       "UpstreamPathTemplate": "/api/auth/register",
-      "UpstreamHttpMethod": [ "Post" ],
+      "UpstreamHttpMethod": ["Post"],
 
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
@@ -47,11 +65,12 @@
       "LoadBalancerOptions": {
         "Type": "RoundRobin"
       },
-      "DownstreamPathTemplate": "/api/auth/register"
+      "DownstreamPathTemplate": "/api/auth/register",
+      "DownstreamHttpMethod": "POST"
     },
     {
       "UpstreamPathTemplate": "/api/me/delete",
-      "UpstreamHttpMethod": [ "Post" ],
+      "UpstreamHttpMethod": ["Post"],
 
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
@@ -63,7 +82,42 @@
       "LoadBalancerOptions": {
         "Type": "RoundRobin"
       },
-      "DownstreamPathTemplate": "/api/me/delete"
+      "DownstreamPathTemplate": "/api/me/delete",
+      "DownstreamHttpMethod": "POST"
+    },
+    {
+      "UpstreamPathTemplate": "/api/auth/status",
+      "UpstreamHttpMethod": ["Get"],
+
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "userservice",
+          "Port": 80
+        }
+      ],
+      "LoadBalancerOptions": {
+        "Type": "RoundRobin"
+      },
+      "DownstreamPathTemplate": "/api/auth/status",
+      "DownstreamHttpMethod": "GET"
+    },
+    {
+      "UpstreamPathTemplate": "/api/project/create",
+      "UpstreamHttpMethod": ["Post"],
+
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "projectservice",
+          "Port": 80
+        }
+      ],
+      "LoadBalancerOptions": {
+        "Type": "RoundRobin"
+      },
+      "DownstreamPathTemplate": "/api/project/create",
+      "DownstreamHttpMethod": "POST"
     }
   ],
   "GlobalConfiguration": {
