@@ -17,9 +17,20 @@ namespace projectservice.Models
         [BsonElement("projectCreator")]
         public string ProjectCreator { get; set; } = string.Empty;
 
-        [BsonElement("labelClasses")]
+        [BsonElement("projectLabelClasses")]
         public Dictionary<string, string> LabelClasses { get; set; } = new Dictionary<string, string>();
-        [BsonElement("pictureUrls")]
-        public List<string> PictureUrls { get; set; } = new List<string>();
+
+        [BsonElement("projectImageUrls")]
+        public List<string> ImageUrls { get; set; } = new List<string>();
+
+        [BsonElement("projectLabellingUsers")]
+        public List<string> LabellingUsers { get; set; } = new List<string>();
+
+        [BsonDateTimeOptions(Kind = DateTimeKind.Local, Representation = BsonType.String)]
+        [BsonElement("projectCreationDate")]
+        public DateTime CreationDate { get; set; } = DateTime.Now;
+
+        [BsonElement("projectIsActive")]
+        public bool IsActive { get; set; } = true;
     }
 }
