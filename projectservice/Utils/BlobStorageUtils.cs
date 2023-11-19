@@ -1,7 +1,7 @@
 ﻿using Azure.Storage.Blobs;
-using System;
+using Azure.Storage.Blobs.Models;
+using System.Security.Cryptography;
 using System.IO;
-using System.Threading.Tasks;
 
 namespace projectservice.Utils
 {
@@ -21,13 +21,36 @@ namespace projectservice.Utils
             _containerClient = new BlobContainerClient(connectionString, containerName);
         }
 
-        public async Task<Uri> UploadFileAsync(byte[] fileData, string fileName, string projectName)
+        public async Task<bool> DeleteFileAsync(string fileName)
         {
-            _logger.LogInformation("Uploading project images");
-            var newFileName = projectName + "-" + Guid.NewGuid().ToString() + Path.GetExtension(fileName);
-            BlobClient blobClient = _containerClient.GetBlobClient(newFileName);
-            using var stream = new MemoryStream(fileData);
-            await blobClient.UploadAsync(stream, true);
+            await _containerClient.GetBlobClient(fileName).DeleteIfExistsAsync();
+            return true;
+        }
+
+        public async Task<Uri> UploadFileIfNotExistsAsync(byte[] fileData, string originalFileName, string projectId)
+        {
+            // Calculate MD5 hash of the file content
+            using var md5 = MD5.Create();
+            var hash = md5.ComputeHash(fileData);
+            var hashString = BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
+            var blobClient = _containerClient.GetBlobClient(hashString);
+
+            // Check if a blob with the same hash exists
+            if (!await blobClient.ExistsAsync())
+            {
+                // If not, upload the file
+                using var stream = new MemoryStream(fileData);
+                var blobUploadOptions = new BlobUploadOptions
+                {
+                    Metadata = new Dictionary<string, string>
+                    {
+                        { "OriginalFileName", originalFileName },
+                        { "ProjectId",  projectId },
+                        { "FileExtension", Path.GetExtension(originalFileName)}
+                    }
+                };
+                await blobClient.UploadAsync(stream, blobUploadOptions);
+            }
             return blobClient.Uri;
         }
     }

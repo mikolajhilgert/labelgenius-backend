@@ -2,6 +2,7 @@
 {
     public interface IBlobStorageUtils
     {
-        Task<Uri> UploadFileAsync(byte[] fileData, string fileName, string projectName);
+        Task<Uri> UploadFileIfNotExistsAsync(byte[] fileData, string fileName, string projectName);
+        Task<bool> DeleteFileAsync(string fileName);
     }
 }
