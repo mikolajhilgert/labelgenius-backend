@@ -2,7 +2,8 @@
 {
     public interface IBlobStorageUtils
     {
-        Task<Uri> UploadFileIfNotExistsAsync(byte[] fileData, string fileName, string projectName);
-        Task<bool> DeleteFileAsync(string fileName);
+        Task DeleteContainer(string containerName);
+        Task<Dictionary<string, string>> UploadFilesAsync(List<(string originalFileName, byte[] content)> files, string projectId);
+        Task<string> GetContainerSASTokenAsync(string containerName);
     }
 }

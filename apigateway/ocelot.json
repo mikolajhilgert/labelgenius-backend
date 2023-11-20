@@ -118,6 +118,74 @@
       },
       "DownstreamPathTemplate": "/api/project/create",
       "DownstreamHttpMethod": "POST"
+    },
+    {
+      "UpstreamPathTemplate": "/api/project/update",
+      "UpstreamHttpMethod": ["Put"],
+
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "projectservice",
+          "Port": 80
+        }
+      ],
+      "LoadBalancerOptions": {
+        "Type": "RoundRobin"
+      },
+      "DownstreamPathTemplate": "/api/project/update",
+      "DownstreamHttpMethod": "PUT"
+    },
+    {
+      "UpstreamPathTemplate": "/api/project/get",
+      "UpstreamHttpMethod": ["Get"],
+
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "projectservice",
+          "Port": 80
+        }
+      ],
+      "LoadBalancerOptions": {
+        "Type": "RoundRobin"
+      },
+      "DownstreamPathTemplate": "/api/project/get",
+      "DownstreamHttpMethod": "GET"
+    },
+    {
+      "UpstreamPathTemplate": "/api/project/delete",
+      "UpstreamHttpMethod": ["Delete"],
+
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "projectservice",
+          "Port": 80
+        }
+      ],
+      "LoadBalancerOptions": {
+        "Type": "RoundRobin"
+      },
+      "DownstreamPathTemplate": "/api/project/delete",
+      "DownstreamHttpMethod": "DELETE"
+    },
+    {
+      "UpstreamPathTemplate": "/api/project/getAll",
+      "UpstreamHttpMethod": ["Get"],
+
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "projectservice",
+          "Port": 80
+        }
+      ],
+      "LoadBalancerOptions": {
+        "Type": "RoundRobin"
+      },
+      "DownstreamPathTemplate": "/api/project/getAll",
+      "DownstreamHttpMethod": "GET"
     }
   ],
   "GlobalConfiguration": {

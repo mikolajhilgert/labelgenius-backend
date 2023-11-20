@@ -8,29 +8,29 @@ namespace projectservice.Models
         [BsonId]
         public ObjectId Id { get; set; } = ObjectId.GenerateNewId();
 
-        [BsonElement("projectName")]
-        public string ProjectName { get; set; } = string.Empty;
+        [BsonElement("name")]
+        public string Name { get; set; } = string.Empty;
 
-        [BsonElement("projectDescription")]
-        public string ProjectDescription { get; set; } = string.Empty;
+        [BsonElement("description")]
+        public string Description { get; set; } = string.Empty;
 
-        [BsonElement("projectCreator")]
-        public string ProjectCreator { get; set; } = string.Empty;
+        [BsonElement("creator")]
+        public string Creator { get; set; } = string.Empty;
 
-        [BsonElement("projectLabelClasses")]
-        public Dictionary<string, string> LabelClasses { get; set; } = new Dictionary<string, string>();
+        [BsonElement("labelClasses")]
+        public Dictionary<string, string> LabelClasses { get; set; } = new();
 
-        [BsonElement("projectImageUrls")]
-        public List<string> ImageUrls { get; set; } = new List<string>();
+        [BsonElement("imageUrls")]
+        public Dictionary<string, string> ImageUrls { get; set; } = new();
 
-        [BsonElement("projectLabellingUsers")]
-        public List<string> LabellingUsers { get; set; } = new List<string>();
+        [BsonElement("labellingUsers")]
+        public List<string> LabellingUsers { get; set; } = new();
 
         [BsonDateTimeOptions(Kind = DateTimeKind.Local, Representation = BsonType.String)]
-        [BsonElement("projectCreationDate")]
+        [BsonElement("creationDate")]
         public DateTime CreationDate { get; set; } = DateTime.Now;
 
-        [BsonElement("projectIsActive")]
+        [BsonElement("isActive")]
         public bool IsActive { get; set; } = true;
     }
 }
