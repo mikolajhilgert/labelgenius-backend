@@ -1,4 +1,5 @@
 ﻿using Google.Api.Gax.ResourceNames;
+using Microsoft.Extensions.Logging;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using projectservice.Dto;
@@ -24,29 +25,28 @@ namespace projectservice.Services
             _logger = logger;
         }
 
-        public async Task<(bool, string)> CreateProject(ProjectDto dto)
+        public async Task<(bool, string)> CreateProject(CreateProjectDTO dto)
         {
             try
             {
                 ObjectId id = ObjectId.GenerateNewId();
-                List<Uri> projectImages = new();
-                foreach (var (FileName, ImageAsByteArray) in dto.Images)
-                {
-                    projectImages.Add(await _blobStorage.UploadFileIfNotExistsAsync(ImageAsByteArray, FileName, id.ToString()));
-                }
+                Dictionary<string, string> projectImages = await _blobStorage.UploadFilesAsync(dto.Images, id.ToString());
                 _logger.LogInformation($"{projectImages.Count} new images have been added to '{id}' project.");
                 Project project = new()
                 {
                     Id = id,
-                    ProjectName = dto.ProjectName,
-                    ProjectCreator = dto.ProjectCreator,
-                    ProjectDescription = dto.ProjectDescription,
+                    Name = dto.ProjectName,
+                    Creator = dto.ProjectCreator,
+                    Description = dto.ProjectDescription,
                     LabelClasses = dto.LabelClasses,
-                    ImageUrls = projectImages.Select(uri => uri.ToString()).ToList()
+                    ImageUrls = projectImages
                 };
                 await _projects.InsertOneAsync(project);
-                return (true, "Project has been successfully created!");
-            }catch (Exception ex)
+
+                // Return project id
+                return (true, id.ToString());
+            }
+            catch (Exception ex)
             {
                 return (false, ex.Message);
             }
@@ -58,33 +58,34 @@ namespace projectservice.Services
             {
                 var project = await _projects.Find(x => x.Id == ObjectId.Parse(projectId)).FirstAsync();
                 // Check if project exists and if the user is the creator
-                if (project != null && project.ProjectCreator == userEmail)
+                if (project != null && project.Creator == userEmail)
                 {
-                    // Delete associated images from blob storage
-                    foreach (var item in project.ImageUrls)
-                    {
-                        await _blobStorage.DeleteFileAsync(item);
-                    }
+                    await _blobStorage.DeleteContainer(projectId);
+                    // Delete project
+                    await _projects.DeleteOneAsync(projectId);
+                    return (true, "Project has been successfully deleted");
                 }
-                // Delete project
-                await _projects.DeleteOneAsync(projectId);
-                return (true, "Project has been successfully deleted");
-            } 
-            catch (Exception ex) 
+                else
+                {
+                    return (false, "Project not found or user is not the creator");
+                }
+
+            }
+            catch (Exception ex)
             {
                 return (false, ex.Message);
             }
         }
 
-        public async Task<(bool Result, string Message)> DeleteUserFromProjects(string userEmail)
+        public async Task<(bool Result, string Message)> DeleteUserFromAllProjects(string userEmail)
         {
             try
             {
-                var projectsWithUser = await _projects.Find(x => x.LabellingUsers.Contains(userEmail) || x.ProjectCreator.Contains(userEmail)).ToListAsync();
+                var projectsWithUser = await _projects.Find(x => x.LabellingUsers.Contains(userEmail) || x.Creator.Equals(userEmail)).ToListAsync();
 
                 foreach (var item in projectsWithUser)
                 {
-                    if (item.ProjectCreator.Contains(userEmail))
+                    if (item.Creator.Contains(userEmail))
                     {
                         // If user is a creator then remove
                         await DeleteProject(item.Id.ToString(), userEmail);
@@ -104,22 +105,76 @@ namespace projectservice.Services
             }
         }
 
-        public async Task<(bool Result, string Message)> UpdateProject(string projectId, ProjectDto dto)
+        public async Task<(bool Result, string Message, ResponseProjectDto Project)> GetProject(string projectId, string userEmail)
         {
-            // TODO: Add updating of uploaded images
             try
             {
                 var project = await _projects.Find(x => x.Id == ObjectId.Parse(projectId)).FirstAsync();
-                if (project != null && project.ProjectCreator == dto.ProjectCreator)
+
+                if (project != null && (project.Creator == userEmail || project.LabellingUsers.Contains(userEmail)))
+                {
+                    ResponseProjectDto projectDto = new()
+                    {
+                        Id = project.Id.ToString(),
+                        ProjectName = project.Name,
+                        ProjectCreator = project.Creator,
+                        ProjectDescription = project.Description,
+                        LabelClasses = project.LabelClasses,
+                        IsActive = project.IsActive,
+                        CreationDate = project.CreationDate,
+                        Images = project.ImageUrls,
+                        ImageSasToken = await _blobStorage.GetContainerSASTokenAsync(projectId.ToString()),
+                        UserIsOwner = project.Creator == userEmail
+                    };
+                    return (true, "", projectDto);
+
+                }
+                else
+                {
+                    return (false, "This user does not have access to this project!", new());
+                }
+            }
+            catch (Exception ex)
+            {
+                return (false, ex.Message, new());
+            }
+        }
+
+        public async Task<(bool Result, Dictionary<string, Dictionary<string, string>> Projects)> GetProjects(string userEmail)
+        {
+            try
+            {
+                // Fetch projects where the user is a labelling user or the creator
+                var projectsWithUser = await _projects.Find(x => x.LabellingUsers.Contains(userEmail) || x.Creator.Equals(userEmail)).ToListAsync();
+
+                // Create a dictionary for each project
+                var projectDict = projectsWithUser.ToDictionary(p => p.Id.ToString(), p => new Dictionary<string, string> { { "name", p.Name }, { "description", p.Description }, { "isProjectCreator", (p.Creator == userEmail).ToString() }, { "dateCreated", p.CreationDate.ToString("yyyy-MM-dd") }, { "isActive", p.IsActive.ToString() } });
+
+                return (true, projectDict);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return (false, new());
+            }
+        }
+
+        public async Task<(bool Result, string Message)> UpdateProject(UpdateProjectDTO dto)
+        {
+            try
+            {
+                var projectId = ObjectId.Parse(dto.ProjectId);
+                var project = await _projects.Find(x => x.Id == projectId).FirstAsync();
+                if (project != null && project.Creator == dto.ProjectCreator)
                 {
                     var update = Builders<Project>.Update
-                        .Set(p => p.ProjectName, dto.ProjectName)
-                        .Set(p => p.ProjectCreator, dto.ProjectCreator)
-                        .Set(p => p.ProjectDescription, dto.ProjectDescription)
+                        .Set(p => p.Name, dto.ProjectName)
+                        .Set(p => p.Creator, dto.ProjectCreator)
+                        .Set(p => p.Description, dto.ProjectDescription)
                         .Set(p => p.LabelClasses, dto.LabelClasses)
                         .Set(p => p.IsActive, dto.IsActive);
 
-                    await _projects.UpdateOneAsync(p => p.Id == ObjectId.Parse(projectId), update);
+                    await _projects.UpdateOneAsync(p => p.Id == projectId, update);
                     return (true, "Project has been successfully updated!");
                 }
                 else
@@ -131,7 +186,6 @@ namespace projectservice.Services
             {
                 return (false, ex.Message);
             }
-
         }
     }
 }
