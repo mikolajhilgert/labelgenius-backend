@@ -11,5 +11,6 @@ namespace projectservice.Services
         Task<(bool Result, string Message)> UpdateProject(UpdateProjectDTO dto);
         Task<(bool Result, string Message, ResponseProjectDto Project)> GetProject(string projectId, string userEmail);
         Task<(bool Result, Dictionary<string, Dictionary<string, string>> Projects)> GetProjects(string userEmail);
+        Task<(bool IsInProject, bool IsProjectCreator)> UserRoleInProject(string projectId, string userEmail);
     }
 }

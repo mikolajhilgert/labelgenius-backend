@@ -126,8 +126,8 @@ namespace projectservice.Services
                         ImageSasToken = await _blobStorage.GetContainerSASTokenAsync(projectId.ToString()),
                         UserIsOwner = project.Creator == userEmail
                     };
-                    return (true, "", projectDto);
 
+                    return (true, "", projectDto);
                 }
                 else
                 {
@@ -186,6 +186,16 @@ namespace projectservice.Services
             {
                 return (false, ex.Message);
             }
+        }
+
+        public async Task<(bool, bool)> UserRoleInProject(string projectId, string userEmail)
+        {
+            var project = await _projects.Find(x => x.Id == ObjectId.Parse(projectId)).FirstAsync();
+            if (project != null && (project.Creator == userEmail || project.LabellingUsers.Contains(userEmail)))
+            {
+                return (true, project.Creator == userEmail);
+            }
+            return (false, false);
         }
     }
 }

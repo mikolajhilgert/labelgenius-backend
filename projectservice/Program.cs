@@ -17,7 +17,7 @@ if (FirebaseApp.DefaultInstance == null)
 builder.Services.AddSingleton<IMongoClient>(s =>
         new MongoClient(builder.Configuration.GetValue<string>("MongoDbSettings:ConnectionString")));
 
-
+builder.Services.AddScoped<ILabelService, LabelService>();
 builder.Services.AddScoped<IProjectService, ProjectService>();
 builder.Services.AddScoped<IBlobStorageUtils, BlobStorageUtils>();
 

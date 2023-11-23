@@ -186,6 +186,86 @@
       },
       "DownstreamPathTemplate": "/api/project/getAll",
       "DownstreamHttpMethod": "GET"
+    },
+    {
+      "UpstreamPathTemplate": "/api/project/label/save",
+      "UpstreamHttpMethod": ["Post"],
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "projectservice",
+          "Port": 80
+        }
+      ],
+      "LoadBalancerOptions": {
+        "Type": "RoundRobin"
+      },
+      "DownstreamPathTemplate": "/api/project/label/save",
+      "DownstreamHttpMethod": "POST"
+    },
+    {
+      "UpstreamPathTemplate": "/api/project/label/deleteAll",
+      "UpstreamHttpMethod": ["Delete"],
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "projectservice",
+          "Port": 80
+        }
+      ],
+      "LoadBalancerOptions": {
+        "Type": "RoundRobin"
+      },
+      "DownstreamPathTemplate": "/api/project/label/deleteAll",
+      "DownstreamHttpMethod": "DELETE"
+    },
+    {
+      "UpstreamPathTemplate": "/api/project/label/delete",
+      "UpstreamHttpMethod": ["Delete"],
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "projectservice",
+          "Port": 80
+        }
+      ],
+      "LoadBalancerOptions": {
+        "Type": "RoundRobin"
+      },
+      "DownstreamPathTemplate": "/api/project/label/delete",
+      "DownstreamHttpMethod": "DELETE"
+    },
+    {
+      "UpstreamPathTemplate": "/api/project/label/get",
+      "UpstreamHttpMethod": ["Get"],
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "projectservice",
+          "Port": 80
+        }
+      ],
+      "LoadBalancerOptions": {
+        "Type": "RoundRobin"
+      },
+      "DownstreamPathTemplate": "/api/project/label/get",
+      "DownstreamHttpMethod": "GET"
+    },
+    {
+      "UpstreamPathTemplate": "/api/project/label/getAll",
+      "UpstreamHttpMethod": ["Get"],
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "projectservice",
+          "Port": 80
+        }
+      ],
+      "LoadBalancerOptions": {
+        "Type": "RoundRobin"
+      },
+      "DownstreamPathTemplate": "/api/project/label/getAll",
+      "DownstreamHttpMethod": "GET"
     }
   ],
   "GlobalConfiguration": {
