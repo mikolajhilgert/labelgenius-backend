@@ -19,7 +19,7 @@ namespace projectservice.Controllers
 
         [Authorize(Roles = "User")]
         [HttpPost("save")]
-        public async Task<IActionResult> SaveImageLabels(ImageLabelsDTO dto)
+        public async Task<IActionResult> SaveImageLabels(List<ImageLabelsDTO> dto)
         {
             try
             {
@@ -28,8 +28,11 @@ namespace projectservice.Controllers
                 {
                     return BadRequest("User not logged in or does not exist");
                 }
+                foreach (var item in dto)
+                {
+                    item.Creator = emailClaim.Value;
+                }
                 // Manually set creator
-                dto.Creator = emailClaim.Value;
                 var (Result, Message) = await _labelService.SaveImageLabels(dto);
                 if (Result)
                 {
@@ -101,34 +104,6 @@ namespace projectservice.Controllers
         }
 
         [Authorize(Roles = "User")]
-        [HttpGet("get")]
-        public async Task<IActionResult> GetLabelsByProjectAndImage(string projectId, string imageId)
-        {
-            try
-            {
-                var emailClaim = (User.Identity as ClaimsIdentity)?.Claims.First(c => c.Type == "email");
-                if (emailClaim == null || string.IsNullOrEmpty(emailClaim.Value))
-                {
-                    return BadRequest("User not logged in or does not exist");
-                }
-                var (Result, Message, Labels) = await _labelService.GetLabelsByProjectAndImage(projectId, imageId, emailClaim.Value);
-                if (Result)
-                {
-                    return Ok(Labels);
-                }
-                else
-                {
-                    // No label for this exists yet
-                    return BadRequest(Message);
-                }
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        [Authorize(Roles = "User")]
         [HttpGet("getAll")]
         public async Task<IActionResult> GetLabelsByProject(string projectId)
         {
@@ -146,6 +121,7 @@ namespace projectservice.Controllers
                 }
                 else
                 {
+                    // No label for this exists yet
                     return BadRequest(Message);
                 }
             }
@@ -154,6 +130,33 @@ namespace projectservice.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        //[Authorize(Roles = "User")]
+        //[HttpGet("getAll")]
+        //public async Task<IActionResult> GetLabelsByProject(string projectId)
+        //{
+        //    try
+        //    {
+        //        var emailClaim = (User.Identity as ClaimsIdentity)?.Claims.First(c => c.Type == "email");
+        //        if (emailClaim == null || string.IsNullOrEmpty(emailClaim.Value))
+        //        {
+        //            return BadRequest("User not logged in or does not exist");
+        //        }
+        //        var (Result, Message, Labels) = await _labelService.GetLabelsByProject(projectId, emailClaim.Value);
+        //        if (Result)
+        //        {
+        //            return Ok(Labels);
+        //        }
+        //        else
+        //        {
+        //            return BadRequest(Message);
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return BadRequest(ex.Message);
+        //    }
+        //}
 
     }
 }

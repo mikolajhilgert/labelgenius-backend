@@ -26,47 +26,48 @@ namespace projectservice.Services
             _logger = logger;
         }
 
-        public async Task<(bool Result, string Message)> SaveImageLabels(ImageLabelsDTO dto)
+        public async Task<(bool Result, string Message)> SaveImageLabels(List<ImageLabelsDTO> dto)
         {
+            var (IsInProject, IsProjectCreator) = await _projectService.UserRoleInProject(dto[0].ProjectId, dto[0].Creator);
+            if (IsInProject == false) return (false, "User is not in the project");
             try
             {
-                var (IsInProject, IsProjectCreator) = await _projectService.UserRoleInProject(dto.ProjectId, dto.Creator);
-                if (IsInProject == false) return (false, "User is not in the project");
-
-                var filter = Builders<ImageLabels>.Filter.And(
-                    Builders<ImageLabels>.Filter.Eq("projectId", ObjectId.Parse(dto.ProjectId)),
-                    Builders<ImageLabels>.Filter.Eq("imageId", dto.ImageId),
-                    Builders<ImageLabels>.Filter.Eq("creator", dto.Creator));
-
-                var existingDocument = await _labels.Find(filter).FirstOrDefaultAsync();
-
-                ImageLabels imageLabels;
-                if (existingDocument != null)
+                foreach (var imageLabel in dto)
                 {
-                    imageLabels = existingDocument;
-                    imageLabels.Labels = dto.Labels.Select(x => ConvertDtoToLabel(x)).ToList();
-                }
-                else
-                {
-                    imageLabels = new ImageLabels
+                    Console.WriteLine(imageLabel.ProjectId, imageLabel.Creator, imageLabel.ImageId);
+                    var filter = Builders<ImageLabels>.Filter.And(
+                        Builders<ImageLabels>.Filter.Eq("projectId", ObjectId.Parse(imageLabel.ProjectId)),
+                        Builders<ImageLabels>.Filter.Eq("imageId", imageLabel.ImageId),
+                        Builders<ImageLabels>.Filter.Eq("creator", imageLabel.Creator));
+
+                    var existingDocument = await _labels.Find(filter).FirstOrDefaultAsync();
+
+                    ImageLabels imageLabels;
+                    if (existingDocument != null)
                     {
-                        ProjectId = ObjectId.Parse(dto.ProjectId),
-                        ImageId = dto.ImageId,
-                        Creator = dto.Creator,
-                        Labels = dto.Labels.Select(x => ConvertDtoToLabel(x)).ToList()
-                    };
+                        imageLabels = existingDocument;
+                        imageLabels.Labels = imageLabel.Labels.Select(x => ConvertDtoToLabel(x)).ToList();
+                    }
+                    else
+                    {
+                        imageLabels = new ImageLabels
+                        {
+                            ProjectId = ObjectId.Parse(imageLabel.ProjectId),
+                            ImageId = imageLabel.ImageId,
+                            Creator = imageLabel.Creator,
+                            Labels = imageLabel.Labels.Select(x => ConvertDtoToLabel(x)).ToList()
+                        };
+                    }
+
+                    var options = new ReplaceOptions { IsUpsert = true };
+                    await _labels.ReplaceOneAsync(filter, imageLabels, options);
                 }
-
-                var options = new ReplaceOptions { IsUpsert = true };
-                await _labels.ReplaceOneAsync(filter, imageLabels, options);
-
                 return (true, "Image labels have been successfully saved");
             }
             catch (Exception ex)
             {
                 return (false, ex.Message);
             }
-
         }
 
         public async Task<(bool Result, string Message)> DeleteAllUserLabels(string userEmail)
@@ -104,7 +105,7 @@ namespace projectservice.Services
             try
             {
                 var (IsInProject, IsProjectCreator) = await _projectService.UserRoleInProject(projectId, userEmail);
-                if (IsProjectCreator == false) return (false, "User is not the project owner", new());
+                if (IsInProject == false) return (false, "User is not the project owner", new());
 
                 var filter = Builders<ImageLabels>.Filter.And(
                     Builders<ImageLabels>.Filter.Eq("projectId", ObjectId.Parse(projectId)),
@@ -127,6 +128,7 @@ namespace projectservice.Services
             }
         }
 
+        // Useless
         public async Task<(bool Result, string Message, ImageLabelsDTO Labels)> GetLabelsByProjectAndImage(string projectId, string imageId, string userEmail)
         {
             try

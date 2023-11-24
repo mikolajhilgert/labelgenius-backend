@@ -6,7 +6,7 @@ namespace projectservice.Models
     public class ImageLabels
     {
         [BsonId]
-        public ObjectId Id { get; set; } = ObjectId.Empty;
+        public ObjectId Id { get; set; } = ObjectId.GenerateNewId();
         [BsonElement("projectId")]
         public ObjectId ProjectId { get; set; } = ObjectId.Empty;
         [BsonElement("imageId")]
