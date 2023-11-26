@@ -3,6 +3,8 @@ using FirebaseAdmin;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authentication;
 using MongoDB.Driver;
+using projectservice.Utils;
+using projectservice.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,7 +14,12 @@ if (FirebaseApp.DefaultInstance == null)
 }
 
 builder.Services.AddSingleton<IMongoClient>(s =>
-        new MongoClient(builder.Configuration.GetValue<string>("UserDbSettings:ConnectionString")));
+        new MongoClient(builder.Configuration.GetValue<string>("MongoDbSettings:ConnectionString")));
+
+builder.Services.AddScoped<ILabelService, LabelService>();
+builder.Services.AddScoped<IProjectService, ProjectService>();
+builder.Services.AddScoped<IBlobStorageUtils, BlobStorageUtils>();
+builder.Services.AddHostedService<ProjectEventService>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
