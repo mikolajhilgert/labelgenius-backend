@@ -10,18 +10,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Azure.Messaging.EventHubs" Version="5.10.0" />
+    <PackageReference Include="Azure.Messaging.EventHubs.Processor" Version="5.10.0" />
+    <PackageReference Include="Azure.Storage.Blobs" Version="12.19.1" />
     <PackageReference Include="FirebaseAdmin" Version="2.4.0" />
     <PackageReference Include="FirebaseAuthentication.net" Version="4.1.0" />
     <PackageReference Include="LabelGenius.Authentication" Version="0.0.1" />
     <PackageReference Include="MongoDB.Driver" Version="2.22.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Services\" />
-    <Folder Include="Repositories\" />
-    <Folder Include="Models\" />
-    <Folder Include="Dto\" />
   </ItemGroup>
 
 </Project>
