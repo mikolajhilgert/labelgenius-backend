@@ -1,5 +1,4 @@
 ﻿using projectservice.Dto;
-using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace projectservice.Services
 {

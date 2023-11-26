@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authentication;
 using MongoDB.Driver;
 using projectservice.Utils;
-using Firebase.Auth.Repository;
 using projectservice.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,7 +19,7 @@ builder.Services.AddSingleton<IMongoClient>(s =>
 builder.Services.AddScoped<ILabelService, LabelService>();
 builder.Services.AddScoped<IProjectService, ProjectService>();
 builder.Services.AddScoped<IBlobStorageUtils, BlobStorageUtils>();
-
+builder.Services.AddHostedService<ProjectEventService>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();

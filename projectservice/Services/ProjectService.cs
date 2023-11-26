@@ -62,7 +62,7 @@ namespace projectservice.Services
                 {
                     await _blobStorage.DeleteContainer(projectId);
                     // Delete project
-                    await _projects.DeleteOneAsync(projectId);
+                    await _projects.DeleteOneAsync(a => a.Id == ObjectId.Parse(projectId)); ;
                     return (true, "Project has been successfully deleted");
                 }
                 else
@@ -81,23 +81,24 @@ namespace projectservice.Services
         {
             try
             {
-                var projectsWithUser = await _projects.Find(x => x.LabellingUsers.Contains(userEmail) || x.Creator.Equals(userEmail)).ToListAsync();
+                var projectsWithUser = await _projects.Find(x => x.LabellingUsers.Contains(userEmail) || x.Creator == userEmail).ToListAsync();
 
-                foreach (var item in projectsWithUser)
+                foreach (var project in projectsWithUser)
                 {
-                    if (item.Creator.Contains(userEmail))
+                    if (project.Creator == userEmail)
                     {
+                        _logger.LogInformation($"Deleting project with id: '{project.Id}'");
                         // If user is a creator then remove
-                        await DeleteProject(item.Id.ToString(), userEmail);
+                        await DeleteProject(project.Id.ToString(), userEmail);
                     }
                     else
                     {
                         // Remove labeller
                         var update = Builders<Project>.Update.Pull(p => p.LabellingUsers, userEmail);
-                        await _projects.UpdateOneAsync(p => p.Id == item.Id, update);
+                        await _projects.UpdateOneAsync(p => p.Id == project.Id, update);
                     }
                 }
-                return (true, "Project deleted succesfully");
+                return (true, "User data deleted from all projects succesfully");
             }
             catch (Exception ex)
             {
