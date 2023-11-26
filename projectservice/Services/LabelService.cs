@@ -1,12 +1,7 @@
-﻿using Microsoft.Extensions.Logging;
-using Microsoft.OpenApi.Models;
-using MongoDB.Bson;
+﻿using MongoDB.Bson;
 using MongoDB.Driver;
 using projectservice.Dto;
 using projectservice.Models;
-using System.Linq;
-using System.Threading.Tasks;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace projectservice.Services
 {
@@ -166,6 +161,27 @@ namespace projectservice.Services
             }
         }
 
+        public async Task RemoveLabelsFromDeletedUsersProject(string userEmail)
+        {
+            try
+            {
+                var (Result, Projects) = await _projectService.GetProjects(userEmail);
+                foreach (var projectId in Projects.Keys)
+                {
+                    var (IsInProject, IsProjectCreator) = await _projectService.UserRoleInProject(projectId, userEmail);
+                    if (IsProjectCreator)
+                    {
+                        await _labels.DeleteManyAsync(x => x.ProjectId == ObjectId.Parse(projectId));
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+            }
+
+        }
+
         private static Label ConvertDtoToLabel(LabelDTO dto)
         {
             return new Label
@@ -191,5 +207,7 @@ namespace projectservice.Services
                 ClassName = label.ClassName
             };
         }
+
+
     }
 }
