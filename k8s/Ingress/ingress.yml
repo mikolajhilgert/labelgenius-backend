@@ -1,0 +1,38 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: lb-ingress
+  namespace: ingress-basic
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  ingressClassName: nginx
+  tls:
+    - secretName: certsecret
+  rules:
+    - host: appcluster-dns-m5g972qg.hcp.germanywestcentral.azmk8s.io
+      http:
+        paths:
+          # - path: /api/auth(/|$)(.*)
+          #   pathType: Prefix
+          #   backend:
+          #     service:
+          #       name: userservice
+          #       port:
+          #         number: 80
+          # - path: /api/user(/|$)(.*)
+          #   pathType: Prefix
+          #   backend:
+          #     service:
+          #       name: userservice
+          #       port:
+          #         number: 80
+          - path: /api/project(/|$)(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: project-service
+                port:
+                  number: 80
