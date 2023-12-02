@@ -7,11 +7,12 @@ namespace userservice.Repositories
     public class UserRepository : IUserRepository
     {
         private readonly IMongoCollection<User> _users;
+        private readonly string _userCollectionName = "Users";
 
         public UserRepository(IConfiguration config, IMongoClient mongoClient)
         {
             var mongoDB = mongoClient.GetDatabase(config.GetSection("UserDbSettings:DatabaseName").Value);
-            _users = mongoDB.GetCollection<User>(config.GetSection("UserDbSettings:CollectionName").Value);
+            _users = mongoDB.GetCollection<User>(_userCollectionName);
         }
         public IMongoCollection<User> GetUserCollection()
         {

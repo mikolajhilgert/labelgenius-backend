@@ -8,6 +8,7 @@
 **/firebase.json
 authentication/nuget.config
 .env
+**/secrets.yml
 
 # User-specific files
 *.rsuser
