@@ -16,10 +16,11 @@ namespace projectservice.Services
         private readonly IBlobStorageUtils _blobStorage;
         private readonly ILogger _logger;
         private readonly IMongoCollection<Project> _projects;
+        private readonly string _projectCollectionName = "Projects";
         public ProjectService(IConfiguration config, IBlobStorageUtils blobStorage, IMongoClient mongoClient, ILogger<ProjectService> logger)
         {
             var mongoDB = mongoClient.GetDatabase(config.GetSection("MongoDbSettings:DatabaseName").Value);
-            _projects = mongoDB.GetCollection<Project>(config.GetSection("MongoDbSettings:ProjectCollectionName").Value);
+            _projects = mongoDB.GetCollection<Project>(_projectCollectionName);
             _config = config;
             _blobStorage = blobStorage;
             _logger = logger;
@@ -170,9 +171,7 @@ namespace projectservice.Services
                 {
                     var update = Builders<Project>.Update
                         .Set(p => p.Name, dto.ProjectName)
-                        .Set(p => p.Creator, dto.ProjectCreator)
                         .Set(p => p.Description, dto.ProjectDescription)
-                        .Set(p => p.LabelClasses, dto.LabelClasses)
                         .Set(p => p.IsActive, dto.IsActive);
 
                     await _projects.UpdateOneAsync(p => p.Id == projectId, update);
