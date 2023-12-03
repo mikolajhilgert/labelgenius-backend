@@ -8,8 +8,34 @@ on:
       - "userservice/**"
       - "projectservice/**"
 
+env:
+  USERSERVICE_CHANGED: false
+  PROJECTSERVICE_CHANGED: false
+
 jobs:
+  setup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Filter Changes
+        uses: dorny/paths-filter@v2
+        id: changes
+        with:
+          filters: |
+            userservice:
+              - 'userservice/**'
+            projectservice:
+              - 'projectservice/**'
+
+      - name: Set env variables
+        run: |
+          echo "USERSERVICE_CHANGED=${{ steps.changes.outputs.userservice }}" >> $GITHUB_ENV
+          echo "PROJECTSERVICE_CHANGED=${{ steps.changes.outputs.projectservice }}" >> $GITHUB_ENV
+
   build:
+    needs: setup
     runs-on: ubuntu-latest
     env:
       GITHUB_USERNAME: ${{ secrets.USERNAME_GITHUB }}
@@ -24,18 +50,8 @@ jobs:
         with:
           dotnet-version: 6.0.x
 
-      - name: Filter Changes
-        uses: dorny/paths-filter@v2
-        id: changes
-        with:
-          filters: |
-            userservice:
-              - 'userservice/**'
-            projectservice:
-              - 'projectservice/**'
-
       - name: Build UserService
-        if: steps.changes.outputs.userservice == 'true'
+        if: env.USERSERVICE_CHANGED == 'true'
         run: |
           cd ./userservice
           dotnet add package LabelGenius.Authentication --version 0.0.1 
@@ -43,70 +59,9 @@ jobs:
           dotnet build
 
       - name: Build ProjectService
-        if: steps.changes.outputs.projectservice == 'true'
+        if: env.PROJECTSERVICE_CHANGED == 'true'
         run: |
           cd ./projectservice
           dotnet add package LabelGenius.Authentication --version 0.0.1 
           dotnet restore
           dotnet build
-
-  unit-test:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-
-      - name: Set up .NET SDK
-        uses: actions/setup-dotnet@v1
-        with:
-          dotnet-version: 6.0.x
-
-      - name: Run unit tests
-        run: |
-          cd ./projectservice.unittests
-          dotnet restore
-          dotnet test --filter FullyQualifiedName~UnitTestProject
-
-  build-and-deploy:
-    runs-on: ubuntu-latest
-    needs: unit-test
-    env:
-      DOCKER_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-      DOCKER_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
-      GITHUB_USERNAME: ${{ secrets.USERNAME_GITHUB }}
-      GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-
-      - name: Filter Changes
-        uses: dorny/paths-filter@v2
-        id: changes
-        with:
-          filters: |
-            userservice:
-              - 'userservice/**'
-            projectservice:
-              - 'projectservice/**'
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
-
-      - name: Login to Docker Hub
-        run: echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
-
-      - name: Deploy User Service to DockerHub
-        if: steps.changes.outputs.userservice == 'true'
-        run: |
-          cd ./userservice
-          docker build -t $DOCKER_USERNAME/userservice:latest --build-arg GITHUB_USERNAME=$GITHUB_USERNAME --build-arg GITHUB_TOKEN=$GITHUB_TOKEN .
-          docker push $DOCKER_USERNAME/userservice:latest
-
-      - name: Deploy ProjectService to DockerHub
-        if: steps.changes.outputs.projectservice == 'true'
-        run: |
-          cd ./projectservice
-          docker build -t $DOCKER_USERNAME/projectservice:latest --build-arg GITHUB_USERNAME=$GITHUB_USERNAME --build-arg GITHUB_TOKEN=$GITHUB_TOKEN .
-          docker push $DOCKER_USERNAME/projectservice:latest

@@ -22,7 +22,7 @@ namespace userservice.Controllers
         [HttpPost("register")]
         public async Task<ActionResult<(bool, string)>> Register(UserRegisterDto userDto)
         {
-            // Check if model is valid
+            // Check if model is valid 
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
             try
