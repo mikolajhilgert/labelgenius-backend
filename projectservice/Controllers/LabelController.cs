@@ -32,7 +32,7 @@ namespace projectservice.Controllers
                 {
                     item.Creator = emailClaim.Value;
                 }
-                // Manually set creator
+                // Manually set creator of project
                 var (Result, Message) = await _labelService.SaveImageLabels(dto);
                 if (Result)
                 {
