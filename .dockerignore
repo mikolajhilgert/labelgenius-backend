@@ -23,5 +23,6 @@
 **/values.dev.yaml
 **/appsettings.json
 **/firebase.json
+**/secrets.yml
 LICENSE
 README.md

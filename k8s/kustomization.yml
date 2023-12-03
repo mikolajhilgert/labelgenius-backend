@@ -1,0 +1,4 @@
+bases:
+  - ./Ingress
+  - ./User
+  - ./Project

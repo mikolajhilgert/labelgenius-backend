@@ -11,11 +11,12 @@ namespace projectservice.Services
         private readonly ILogger _logger;
         private readonly IMongoCollection<ImageLabels> _labels;
         private readonly IProjectService _projectService;
+        private readonly string _labelCollectionName = "ProjectImageLabels";
 
         public LabelService(IConfiguration config, IMongoClient mongoClient, IProjectService projectService, ILogger<ProjectService> logger)
         {
             var mongoDB = mongoClient.GetDatabase(config.GetSection("MongoDbSettings:DatabaseName").Value);
-            _labels = mongoDB.GetCollection<ImageLabels>(config.GetSection("MongoDbSettings:ProjectImageLabelsCollectionName").Value);
+            _labels = mongoDB.GetCollection<ImageLabels>(_labelCollectionName);
             _config = config;
             _projectService = projectService;
             _logger = logger;
