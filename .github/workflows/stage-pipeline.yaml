@@ -22,12 +22,6 @@ jobs:
         with:
           dotnet-version: 6.0.x
 
-      - name: Build API Gateway
-        run: |
-          cd ./apigateway
-          dotnet restore
-          dotnet build
-
       - name: Build UserService
         run: |
           cd ./userservice
@@ -81,11 +75,7 @@ jobs:
 
       - name: Build and Push Docker Images
         run: |
-          cd ./apigateway
-          docker build -t $DOCKER_USERNAME/apigateway:latest .
-          docker push $DOCKER_USERNAME/apigateway:latest
-
-          cd ../userservice
+          cd ./userservice
           docker build -t $DOCKER_USERNAME/userservice:latest --build-arg GITHUB_USERNAME=$GITHUB_USERNAME --build-arg GITHUB_TOKEN=$GITHUB_TOKEN .
           docker push $DOCKER_USERNAME/userservice:latest
 
