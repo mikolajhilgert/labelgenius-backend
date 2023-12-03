@@ -22,3 +22,4 @@ namespace projectservice.Dto
         public double Width { get; set; } = 0.0;
     }
 }
+
