@@ -19,7 +19,7 @@ namespace projectservice.Dto
         public double X { get; set; } = 0.0;
         public double Y { get; set; } = 0.0;
         public double Height { get; set; } = 0.0;
-        public double Width { get; set; } = 1.0;
+        public double Width { get; set; } = 0.0;
     }
 }
 
