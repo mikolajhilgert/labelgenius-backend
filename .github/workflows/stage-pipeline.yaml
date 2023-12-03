@@ -78,6 +78,16 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
 
     steps:
+      - name: Filter Changes
+        uses: dorny/paths-filter@v2
+        id: changes
+        with:
+          filters: |
+            userservice:
+              - 'userservice/**'
+            projectservice:
+              - 'projectservice/**'
+
       - name: Checkout
         uses: actions/checkout@v2
 
