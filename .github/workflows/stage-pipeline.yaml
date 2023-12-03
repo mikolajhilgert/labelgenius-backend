@@ -1,4 +1,4 @@
-name: Build and Deploy
+name: Stage
 
 on:
   push:
@@ -6,42 +6,30 @@ on:
       - main
 
 jobs:
-  build-userservice:
+  build:
     runs-on: ubuntu-latest
+
+    env:
+      GITHUB_USERNAME: ${{ secrets.USERNAME_GITHUB }}
+      GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
 
     steps:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Check if UserService has changed
-        id: check_changes_userservice
-        uses: MarceloPrado/has-changed-path@v1
+      - name: Set up .NET SDK
+        uses: actions/setup-dotnet@v1
         with:
-          paths: "userservice"
+          dotnet-version: 6.0.x
 
       - name: Build UserService
-        if: steps.check_changes_userservice.outputs.changed == 'true'
         run: |
           cd ./userservice
           dotnet add package LabelGenius.Authentication --version 0.0.1 
           dotnet restore
           dotnet build
 
-  build-projectservice:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-
-      - name: Check if ProjectService has changed
-        id: check_changes_projectservice
-        uses: MarceloPrado/has-changed-path@v1
-        with:
-          paths: "projectservice"
-
       - name: Build ProjectService
-        if: steps.check_changes_projectservice.outputs.changed == 'true'
         run: |
           cd ./projectservice
           dotnet add package LabelGenius.Authentication --version 0.0.1 
@@ -49,12 +37,16 @@ jobs:
           dotnet build
 
   unit-test:
-    needs: [build-userservice, build-projectservice]
+    needs: build
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+
+      - name: Set up .NET SDK
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 6.0.x
 
       - name: Run unit tests
         run: |
@@ -62,44 +54,40 @@ jobs:
           dotnet restore
           dotnet test --filter FullyQualifiedName~UnitTestProject
 
-  build-and-deploy-userservice:
+  build-and-deploy:
     runs-on: ubuntu-latest
     needs: unit-test
+    env:
+      DOCKER_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKER_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
+      GITHUB_USERNAME: ${{ secrets.USERNAME_GITHUB }}
+      GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
 
     steps:
       - name: Checkout
         uses: actions/checkout@v2
 
+      - name: Check for changes in UserService or ProjectService
+        id: check_changes
+        uses: MarceloPrado/has-changed-path@v2.0.0
+        with:
+          paths: "userservice projectservice"
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
+        if: steps.check_changes.outputs.changed == 'true'
 
       - name: Login to Docker Hub
         run: echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
+        if: steps.check_changes.outputs.changed == 'true'
 
       - name: Build and Push Docker Images
-        if: steps.check_changes_userservice.outputs.changed == 'true'
         run: |
           cd ./userservice
           docker build -t $DOCKER_USERNAME/userservice:latest --build-arg GITHUB_USERNAME=$GITHUB_USERNAME --build-arg GITHUB_TOKEN=$GITHUB_TOKEN .
           docker push $DOCKER_USERNAME/userservice:latest
 
-  build-and-deploy-projectservice:
-    runs-on: ubuntu-latest
-    needs: unit-test
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
-
-      - name: Login to Docker Hub
-        run: echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
-
-      - name: Build and Push Docker Images
-        if: steps.check_changes_projectservice.outputs.changed == 'true'
-        run: |
-          cd ./projectservice
+          cd ../projectservice
           docker build -t $DOCKER_USERNAME/projectservice:latest --build-arg GITHUB_USERNAME=$GITHUB_USERNAME --build-arg GITHUB_TOKEN=$GITHUB_TOKEN .
           docker push $DOCKER_USERNAME/projectservice:latest
+        if: steps.check_changes.outputs.changed == 'true'
