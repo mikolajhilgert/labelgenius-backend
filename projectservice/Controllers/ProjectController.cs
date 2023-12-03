@@ -23,7 +23,7 @@ namespace projectservice.Controllers
         {
             try
             {
-                // Check if model is valid (required fields are filled in)
+                // Check if model is valid
                 if (!ModelState.IsValid) return BadRequest(ModelState);
 
                 // Retrieve the email claim from the user's claims
