@@ -24,8 +24,18 @@ jobs:
         with:
           dotnet-version: 6.0.x
 
+      - name: Filter Changes
+        uses: dorny/paths-filter@v2
+        id: changes
+        with:
+          filters: |
+            userservice:
+              - 'userservice/**'
+            projectservice:
+              - 'projectservice/**'
+
       - name: Build UserService
-        if: contains(github.event.head_commit.message, 'userservice')
+        if: steps.changes.outputs.userservice == 'true'
         run: |
           cd ./userservice
           dotnet add package LabelGenius.Authentication --version 0.0.1 
@@ -33,7 +43,7 @@ jobs:
           dotnet build
 
       - name: Build ProjectService
-        if: contains(github.event.head_commit.message, 'projectservice')
+        if: steps.changes.outputs.projectservice == 'true'
         run: |
           cd ./projectservice
           dotnet add package LabelGenius.Authentication --version 0.0.1 
@@ -79,14 +89,14 @@ jobs:
 
       - name: Build and Push Docker Images
         run: |
-          if contains(github.event.head_commit.message, 'userservice')
+          if steps.changes.outputs.userservice == 'true'
           then
             cd ./userservice
             docker build -t $DOCKER_USERNAME/userservice:latest --build-arg GITHUB_USERNAME=$GITHUB_USERNAME --build-arg GITHUB_TOKEN=$GITHUB_TOKEN .
             docker push $DOCKER_USERNAME/userservice:latest
           fi
 
-          if contains(github.event.head_commit.message, 'projectservice')
+          if steps.changes.outputs.projectservice == 'true'
           then
             cd ../projectservice
             docker build -t $DOCKER_USERNAME/projectservice:latest --build-arg GITHUB_USERNAME=$GITHUB_USERNAME --build-arg GITHUB_TOKEN=$GITHUB_TOKEN .
