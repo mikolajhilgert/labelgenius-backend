@@ -81,34 +81,22 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Filter Changes
-        uses: dorny/paths-filter@v2
-        id: changes
-        with:
-          filters: |
-            userservice:
-              - 'userservice/**'
-            projectservice:
-              - 'projectservice/**'
-
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
 
       - name: Login to Docker Hub
         run: echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
 
-      - name: Build and Push Docker Images
+      - name: Deploy UserService to DockerHub
+        if: steps.changes.outputs.userservice == 'true'
         run: |
-          if steps.changes.outputs.userservice == 'true'
-          then
-            cd ./userservice
-            docker build -t $DOCKER_USERNAME/userservice:latest --build-arg GITHUB_USERNAME=$GITHUB_USERNAME --build-arg GITHUB_TOKEN=$GITHUB_TOKEN .
-            docker push $DOCKER_USERNAME/userservice:latest
-          fi
+          cd ./userservice
+          docker build -t $DOCKER_USERNAME/userservice:latest --build-arg GITHUB_USERNAME=$GITHUB_USERNAME --build-arg GITHUB_TOKEN=$GITHUB_TOKEN .
+          docker push $DOCKER_USERNAME/userservice:latest
 
-          if steps.changes.outputs.projectservice == 'true'
-          then
-            cd ../projectservice
-            docker build -t $DOCKER_USERNAME/projectservice:latest --build-arg GITHUB_USERNAME=$GITHUB_USERNAME --build-arg GITHUB_TOKEN=$GITHUB_TOKEN .
-            docker push $DOCKER_USERNAME/projectservice:latest
-          fi
+      - name: Deploy ProjectService to DockerHub
+        if: steps.changes.outputs.projectservice == 'true'
+        run: |
+          cd ./projectservice
+          docker build -t $DOCKER_USERNAME/projectservice:latest --build-arg GITHUB_USERNAME=$GITHUB_USERNAME --build-arg GITHUB_TOKEN=$GITHUB_TOKEN .
+          docker push $DOCKER_USERNAME/projectservice:latest
