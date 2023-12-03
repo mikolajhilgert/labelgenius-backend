@@ -4,9 +4,6 @@ on:
   push:
     branches:
       - main
-    paths:
-      - 'userservice/**'
-      - 'projectservice/**'
 
 jobs:
   build:
@@ -26,7 +23,6 @@ jobs:
           dotnet-version: 6.0.x
 
       - name: Build UserService
-        if: contains(github.event.head_commit.modified, 'userservice')
         run: |
           cd ./userservice
           dotnet add package LabelGenius.Authentication --version 0.0.1 
@@ -34,7 +30,6 @@ jobs:
           dotnet build
 
       - name: Build ProjectService
-        if: contains(github.event.head_commit.modified, 'projectservice')
         run: |
           cd ./projectservice
           dotnet add package LabelGenius.Authentication --version 0.0.1 
@@ -80,12 +75,10 @@ jobs:
 
       - name: Build and Push Docker Images
         run: |
-          if: contains(github.event.head_commit.modified, 'userservice')
           cd ./userservice
           docker build -t $DOCKER_USERNAME/userservice:latest --build-arg GITHUB_USERNAME=$GITHUB_USERNAME --build-arg GITHUB_TOKEN=$GITHUB_TOKEN .
           docker push $DOCKER_USERNAME/userservice:latest
 
-          if: contains(github.event.head_commit.modified, 'projectservice')
           cd ../projectservice
           docker build -t $DOCKER_USERNAME/projectservice:latest --build-arg GITHUB_USERNAME=$GITHUB_USERNAME --build-arg GITHUB_TOKEN=$GITHUB_TOKEN .
           docker push $DOCKER_USERNAME/projectservice:latest
