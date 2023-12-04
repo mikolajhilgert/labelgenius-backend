@@ -54,7 +54,7 @@ jobs:
         with:
           dotnet-version: 6.0.x
 
-      - name: Run project unit tests
+      - name: Run unit tests
         run: |
           cd ./projectservice
           dotnet add package LabelGenius.Authentication --version 0.0.1
