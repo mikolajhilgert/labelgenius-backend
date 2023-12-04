@@ -24,18 +24,7 @@ jobs:
         with:
           dotnet-version: 6.0.x
 
-      - name: Filter Changes
-        uses: dorny/paths-filter@v2
-        id: changes
-        with:
-          filters: |
-            userservice:
-              - 'userservice/**'
-            projectservice:
-              - 'projectservice/**'
-
       - name: Build UserService
-        if: steps.changes.outputs.userservice == 'true'
         run: |
           cd ./userservice
           dotnet add package LabelGenius.Authentication --version 0.0.1
@@ -43,7 +32,6 @@ jobs:
           dotnet build
 
       - name: Build ProjectService
-        if: steps.changes.outputs.projectservice == 'true'
         run: |
           cd ./projectservice
           dotnet add package LabelGenius.Authentication --version 0.0.1
