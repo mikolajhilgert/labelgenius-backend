@@ -46,7 +46,7 @@ namespace projectservice.unittests
             var encodedText = InvitationTokenUtil.Base64Encode(plainText);
             var decodedText = InvitationTokenUtil.Base64Decode(encodedText);
 
-            // Assert
+            // Assert 
             Assert.Equal(Convert.ToBase64String(Encoding.UTF8.GetBytes(plainText)), encodedText);
             Assert.Equal(plainText, decodedText);
         }
