@@ -53,6 +53,7 @@ jobs:
       - name: Run unit tests
         run: |
           cd ./projectservice.unittests
+          dotnet add package LabelGenius.Authentication --version 0.0.1
           dotnet restore
           dotnet test --filter FullyQualifiedName~UnitTestProject
 
