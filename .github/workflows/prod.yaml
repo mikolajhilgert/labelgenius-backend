@@ -60,7 +60,7 @@ jobs:
           dotnet add package LabelGenius.Authentication --version 0.0.1
           cd ../projectservice.unittests
           dotnet restore
-          dotnet test --filter FullyQualifiedName~UnitTestProject
+          dotnet test --filter FullyQualifiedName~projectservice.unittests.UnitTests
 
   build-image:
     runs-on: ubuntu-latest
