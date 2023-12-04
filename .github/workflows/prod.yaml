@@ -85,7 +85,7 @@ jobs:
       - name: Login to Docker Hub
         run: echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
 
-      - name: Deploy User Service to DockerHub
+      - name: Deploy UserService to DockerHub
         if: steps.changes.outputs.userservice == 'true'
         run: |
           cd ./userservice
@@ -135,7 +135,7 @@ jobs:
           admin: "false"
           use-kubelogin: "true"
 
-      - name: Deploy UserService
+      - name: Deploy UserService to AKS
         if: steps.changes.outputs.userservice == 'true'
         uses: Azure/k8s-deploy@v4
         with:
@@ -145,7 +145,7 @@ jobs:
           images: |
             $DOCKER_USERNAME/userservice:latest
 
-      - name: Deploy ProjectService
+      - name: Deploy ProjectService to AKS
         if: steps.changes.outputs.projectservice == 'true'
         uses: Azure/k8s-deploy@v4
         with:
