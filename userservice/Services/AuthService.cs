@@ -51,7 +51,7 @@ namespace userservice.Services
             try
             {
                 await _firebaseAuthClient.ResetEmailPasswordAsync(userDto.Email);
-                return (true, "Password reset email sent");
+                return (true, "Password reset email has been sent");
             }
             catch (Exception e)
             {
