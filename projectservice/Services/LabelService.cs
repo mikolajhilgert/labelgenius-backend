@@ -72,7 +72,7 @@ namespace projectservice.Services
             {
                 var filter = Builders<ImageLabels>.Filter.Eq("creator", userEmail);
                 await _labels.DeleteManyAsync(filter);
-                return (true, "All user labels have been successfully deleted");
+                return (true, "All user labels have been successfully deleted.");
             }
             catch (Exception ex)
             {
