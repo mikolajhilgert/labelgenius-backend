@@ -1,0 +1,90 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-service
+  namespace: ingress-basic
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: user-service
+  template:
+    metadata:
+      labels:
+        app: user-service
+    spec:
+      containers:
+        - name: userservice
+          image: zstrox/userservice:latest
+          ports:
+            - containerPort: 80
+              protocol: TCP
+          env:
+            - name: GOOGLE_APPLICATION_CREDENTIALS
+              value: /var/secret/firebase.json
+            - name: BlobStorage__ConnectionString
+              valueFrom:
+                secretKeyRef:
+                  name: env-secret
+                  key: BlobStorage__ConnectionString
+            - name: FirebaseSettings__apiKey
+              valueFrom:
+                secretKeyRef:
+                  name: env-secret
+                  key: FirebaseSettings__apiKey
+            - name: FirebaseSettings__authDomain
+              valueFrom:
+                secretKeyRef:
+                  name: env-secret
+                  key: FirebaseSettings__authDomain
+            - name: MongoDbSettings__ConnectionString
+              valueFrom:
+                secretKeyRef:
+                  name: env-secret
+                  key: MongoDbSettings__ConnectionString
+            - name: MongoDbSettings__DatabaseName
+              valueFrom:
+                secretKeyRef:
+                  name: env-secret
+                  key: MongoDbSettings__DatabaseName
+            - name: EventHubConfig__EventHubConnectionString
+              valueFrom:
+                secretKeyRef:
+                  name: env-secret
+                  key: EventHubConfig__EventHubConnectionString
+            - name: EventHubConfig__EventHubName
+              valueFrom:
+                secretKeyRef:
+                  name: env-secret
+                  key: EventHubConfig__EventHubName
+          volumeMounts:
+            - name: json-secret-volume
+              mountPath: /var/secret
+          resources:
+            limits:
+              cpu: 500m
+              memory: 500M
+            requests:
+              cpu: 50m
+              memory: 50M
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          imagePullPolicy: Always
+      volumes:
+        - name: json-secret-volume
+          secret:
+            secretName: firebase.json
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      nodeSelector:
+        kubernetes.io/os: linux
+      securityContext: {}
+      schedulerName: default-scheduler
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600
