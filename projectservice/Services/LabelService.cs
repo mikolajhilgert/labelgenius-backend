@@ -88,7 +88,7 @@ namespace projectservice.Services
                     Builders<ImageLabels>.Filter.Eq("projectId", ObjectId.Parse(projectId)),
                     Builders<ImageLabels>.Filter.Eq("creator", userEmail));
                 await _labels.DeleteManyAsync(filter);
-                return (true, "All your project labels have been successfully deleted");
+                return (true, "All your project labels have been successfully deleted.");
             }
             catch (Exception ex)
             {
