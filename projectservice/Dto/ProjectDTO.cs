@@ -16,7 +16,7 @@ namespace projectservice.Dto
         [Required]
         public bool IsActive { get; set; } = true;
 
-        // Images as Bytes  
+        // Images as Bytes 
         public List<(string FileName, byte[] ImageAsByteArray)> Images { get; set; } = new List<(string FileName, byte[] Image)>();
     }
     public class UpdateProjectDTO
