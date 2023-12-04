@@ -101,7 +101,7 @@ namespace projectservice.Services
             try
             {
                 var (IsInProject, IsProjectCreator) = await _projectService.UserRoleInProject(projectId, userEmail);
-                if (IsInProject == false) return (false, "User is not the project owner", new());
+                if (IsInProject == false) return (false, "User is not the project owner.", new());
 
                 var filter = Builders<ImageLabels>.Filter.And(
                     Builders<ImageLabels>.Filter.Eq("projectId", ObjectId.Parse(projectId)),
