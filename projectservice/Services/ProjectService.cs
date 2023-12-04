@@ -44,7 +44,7 @@ namespace projectservice.Services
                 };
                 await _projects.InsertOneAsync(project);
 
-                // Return project id
+                // Return project id to the client
                 return (true, id.ToString());
             }
             catch (Exception ex)
