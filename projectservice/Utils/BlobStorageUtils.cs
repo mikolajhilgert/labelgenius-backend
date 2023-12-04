@@ -21,7 +21,7 @@ namespace projectservice.Utils
 
         public async Task DeleteContainer(string containerName)
         {
-            // Get a BlobContainerClient object
+            // Get a BlobContainerClient object 
             BlobContainerClient containerClient = _blobServiceClient.GetBlobContainerClient(containerName);
 
             // Check if the container exists
