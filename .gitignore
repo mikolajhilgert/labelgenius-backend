@@ -9,6 +9,7 @@
 authentication/nuget.config
 .env
 **/secrets.yml
+**/cluster-issuer.yml
 
 # User-specific files
 *.rsuser

@@ -6,6 +6,7 @@ builder.Configuration.SetBasePath(builder.Environment.ContentRootPath)
     .AddJsonFile("ocelot.json", optional: false, reloadOnChange: true)
     .AddEnvironmentVariables();
 
+// Add CORS for local deployment 
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowLocalhost", builder =>
