@@ -94,7 +94,7 @@ jobs:
           New-Item -Path .\.sonar\scanner -ItemType Directory
           dotnet tool update dotnet-sonarscanner --tool-path .\.sonar\scanner
       - name: Build and analyze
-        working-directory: labelgenius-backend/userservice
+        working-directory: userservice
         env:
           GITHUB_USERNAME: ${{ secrets.USERNAME_GITHUB }}
           GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }} # Needed to get PR information, if any
