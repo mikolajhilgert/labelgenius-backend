@@ -65,6 +65,9 @@ jobs:
   sonarcloud:
     # needs: [build]
     runs-on: windows-latest
+    env:
+      GITHUB_USERNAME: ${{ secrets.USERNAME_GITHUB }}
+      GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
     steps:
       - name: Set up JDK 17
         uses: actions/setup-java@v3
