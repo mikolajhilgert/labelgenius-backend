@@ -74,8 +74,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          sonar.projectKey: mikolajhilgert_labelgenius-backend
-          sonar.organisation: mikolajhilgert
 
   # build-image:
   #   runs-on: ubuntu-latest
