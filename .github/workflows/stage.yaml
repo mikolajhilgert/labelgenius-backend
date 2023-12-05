@@ -109,7 +109,7 @@ jobs:
 
   build-image:
     runs-on: ubuntu-latest
-    needs: [unit-test]
+    needs: [unit-test, sonarcloud]
     env:
       DOCKER_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKER_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
