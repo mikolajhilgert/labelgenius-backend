@@ -9,58 +9,71 @@ on:
       - "projectservice/**"
 
 jobs:
-  build:
+  # build:
+  #   runs-on: ubuntu-latest
+  #   env:
+  #     GITHUB_USERNAME: ${{ secrets.USERNAME_GITHUB }}
+  #     GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
+
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v2
+
+  #     - name: Set up .NET SDK
+  #       uses: actions/setup-dotnet@v1
+  #       with:
+  #         dotnet-version: 6.0.x
+
+  #     - name: Build UserService
+  #       run: |
+  #         cd ./userservice
+  #         dotnet add package LabelGenius.Authentication --version 0.0.1
+  #         dotnet restore
+  #         dotnet build
+
+  #     - name: Build ProjectService
+  #       run: |
+  #         cd ./projectservice
+  #         dotnet add package LabelGenius.Authentication --version 0.0.1
+  #         dotnet restore
+  #         dotnet build
+
+  # unit-test:
+  #   needs: [build]
+  #   runs-on: ubuntu-latest
+  #   env:
+  #     GITHUB_USERNAME: ${{ secrets.USERNAME_GITHUB }}
+  #     GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
+
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v2
+
+  #     - name: Set up .NET SDK
+  #       uses: actions/setup-dotnet@v1
+  #       with:
+  #         dotnet-version: 6.0.x
+
+  #     - name: Run unit tests
+  #       run: |
+  #         cd ./projectservice
+  #         dotnet add package LabelGenius.Authentication --version 0.0.1
+  #         cd ../projectservice.unittests
+  #         dotnet restore
+  #         dotnet test --filter FullyQualifiedName~projectservice.unittests.UnitTests
+
+  sonarcloud:
+    # needs: [build]
     runs-on: ubuntu-latest
-    env:
-      GITHUB_USERNAME: ${{ secrets.USERNAME_GITHUB }}
-      GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
-
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-
-      - name: Set up .NET SDK
-        uses: actions/setup-dotnet@v1
+      - uses: actions/checkout@v3
         with:
-          dotnet-version: 6.0.x
-
-      - name: Build UserService
-        run: |
-          cd ./userservice
-          dotnet add package LabelGenius.Authentication --version 0.0.1
-          dotnet restore
-          dotnet build
-
-      - name: Build ProjectService
-        run: |
-          cd ./projectservice
-          dotnet add package LabelGenius.Authentication --version 0.0.1
-          dotnet restore
-          dotnet build
-
-  unit-test:
-    needs: [build]
-    runs-on: ubuntu-latest
-    env:
-      GITHUB_USERNAME: ${{ secrets.USERNAME_GITHUB }}
-      GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-
-      - name: Set up .NET SDK
-        uses: actions/setup-dotnet@v1
-        with:
-          dotnet-version: 6.0.x
-
-      - name: Run unit tests
-        run: |
-          cd ./projectservice
-          dotnet add package LabelGenius.Authentication --version 0.0.1
-          cd ../projectservice.unittests
-          dotnet restore
-          dotnet test --filter FullyQualifiedName~projectservice.unittests.UnitTests
+          fetch-depth: 0
+      - name: SonarCloud Scan
+        uses: sonarsource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   build-image:
     runs-on: ubuntu-latest
