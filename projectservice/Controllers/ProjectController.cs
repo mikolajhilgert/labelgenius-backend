@@ -34,7 +34,7 @@ namespace projectservice.Controllers
                     return BadRequest("User not logged in or does not exist");
                 }
 
-                // Manually set creator from claims (so no forgery can happen)
+                // Manually set creator from claims (so no forgery can happen) 
                 projectDto.ProjectCreator = emailClaim.Value;
 
                 if (projectDto.FormFiles != null && projectDto.FormFiles.Count > 0)
