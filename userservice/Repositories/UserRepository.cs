@@ -28,6 +28,7 @@ namespace userservice.Repositories
         }
         public async Task<(bool Result, string Message)> SaveUser(UserRegisterDto userDto, string firebaseId)
         {
+            // Check if user already exists
             var existingUser = await _users.Find(user => user.Email == userDto.Email).FirstOrDefaultAsync();
             if (existingUser != null)
             {

@@ -1,9 +1,9 @@
-name: Prod
+name: Stage
 
 on:
   push:
     branches:
-      - prod
+      - main
     paths:
       - "userservice/**"
       - "projectservice/**"
@@ -146,8 +146,8 @@ jobs:
         uses: Azure/k8s-deploy@v4
         with:
           action: deploy
-          manifests: ./userservice/k8s-manifest/deployment-prod.yml
-          namespace: ingress-basic
+          manifests: ./userservice/k8s-manifest/deployment-stage.yml
+          namespace: stage
           images: |
             $DOCKER_USERNAME/userservice:latest
 
@@ -156,7 +156,7 @@ jobs:
         uses: Azure/k8s-deploy@v4
         with:
           action: deploy
-          manifests: ./projectservice/k8s-manifest/deployment-prod.yml
-          namespace: ingress-basic
+          manifests: ./projectservice/k8s-manifest/deployment-stage.yml
+          namespace: stage
           images: |
             $DOCKER_USERNAME/projectservice:latest
