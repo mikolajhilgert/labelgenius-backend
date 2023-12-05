@@ -100,11 +100,10 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         shell: powershell
         run: |
-          .\.sonar\scanner\dotnet-sonarscanner begin /k:"mikolajhilgert_labelgenius-backend" /o:"mikolajhilgert" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
           cd ./userservice
+          .\.sonar\scanner\dotnet-sonarscanner begin /k:"mikolajhilgert_labelgenius-backend" /o:"mikolajhilgert" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
           dotnet add package LabelGenius.Authentication --version 0.0.1
           dotnet build --no-incremental
-          cd ..
           .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
 
   # build-image:
