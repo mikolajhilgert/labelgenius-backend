@@ -36,7 +36,7 @@ namespace userservice.Services
                     // Remove user from Firebase
                     await DeleteUserAsync(token);
 
-                    // Publish deletion event to eventhub
+                    // Publish deletion event to event hub
                     var projectEvent = new ActionEvent { EventType = "deleteuserdata", DeleteUserEmail = email };
                     var emailEvent = new List<EventData> { new EventData(JsonConvert.SerializeObject(projectEvent)) };
                     await _eventProducer.SendAsync(emailEvent);

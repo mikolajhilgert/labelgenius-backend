@@ -6,10 +6,16 @@ metadata:
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
     nginx.ingress.kubernetes.io/use-regex: "true"
     nginx.ingress.kubernetes.io/rewrite-target: ""
+    cert-manager.io/cluster-issuer: "letsencrypt"
 spec:
+  tls:
+    - hosts:
+        - labelgenius.pics
+      secretName: tls-secret-1
   ingressClassName: nginx
   rules:
-    - http:
+    - host: labelgenius.pics
+      http:
         paths:
           - path: "/api/project(/|$)(.*)"
             pathType: Prefix

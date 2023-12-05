@@ -72,7 +72,7 @@ namespace projectservice.Services
             {
                 var filter = Builders<ImageLabels>.Filter.Eq("creator", userEmail);
                 await _labels.DeleteManyAsync(filter);
-                return (true, "All user labels have been successfully deleted");
+                return (true, "All user labels have been successfully deleted.");
             }
             catch (Exception ex)
             {
@@ -88,7 +88,7 @@ namespace projectservice.Services
                     Builders<ImageLabels>.Filter.Eq("projectId", ObjectId.Parse(projectId)),
                     Builders<ImageLabels>.Filter.Eq("creator", userEmail));
                 await _labels.DeleteManyAsync(filter);
-                return (true, "All your project labels have been successfully deleted");
+                return (true, "All your project labels have been successfully deleted.");
             }
             catch (Exception ex)
             {
@@ -101,7 +101,7 @@ namespace projectservice.Services
             try
             {
                 var (IsInProject, IsProjectCreator) = await _projectService.UserRoleInProject(projectId, userEmail);
-                if (IsInProject == false) return (false, "User is not the project owner", new());
+                if (IsInProject == false) return (false, "User is not the project owner.", new());
 
                 var filter = Builders<ImageLabels>.Filter.And(
                     Builders<ImageLabels>.Filter.Eq("projectId", ObjectId.Parse(projectId)),

@@ -11,7 +11,7 @@ namespace userservice.Repositories
 
         public UserRepository(IConfiguration config, IMongoClient mongoClient)
         {
-            var mongoDB = mongoClient.GetDatabase(config.GetSection("UserDbSettings:DatabaseName").Value);
+            var mongoDB = mongoClient.GetDatabase(config.GetSection("MongoDbSettings:DatabaseName").Value);
             _users = mongoDB.GetCollection<User>(_userCollectionName);
         }
         public IMongoCollection<User> GetUserCollection()
@@ -28,6 +28,7 @@ namespace userservice.Repositories
         }
         public async Task<(bool Result, string Message)> SaveUser(UserRegisterDto userDto, string firebaseId)
         {
+            // Check if user already exists
             var existingUser = await _users.Find(user => user.Email == userDto.Email).FirstOrDefaultAsync();
             if (existingUser != null)
             {

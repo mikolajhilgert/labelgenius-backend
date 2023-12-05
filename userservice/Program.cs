@@ -16,7 +16,7 @@ if (FirebaseApp.DefaultInstance == null)
 }
 
 builder.Services.AddSingleton<IMongoClient>(s =>
-        new MongoClient(builder.Configuration.GetValue<string>("UserDbSettings:ConnectionString")));
+        new MongoClient(builder.Configuration.GetValue<string>("MongoDbSettings:ConnectionString")));
 
 builder.Services.AddSingleton<IFirebaseAuthClient>(s => new FirebaseAuthClient(new FirebaseAuthConfig
 {
