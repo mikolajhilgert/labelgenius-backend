@@ -14,7 +14,7 @@ spec:
         app: communication-service
     spec:
       containers:
-        - name: communicationervice
+        - name: communicationservice
           image: zstrox/communicationservice:latest
           ports:
             - containerPort: 80
