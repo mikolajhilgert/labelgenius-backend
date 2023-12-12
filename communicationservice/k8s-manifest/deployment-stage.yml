@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: communication-service
-  namespace: ingress-basic
+  namespace: stage
 spec:
   replicas: 1
   selector:

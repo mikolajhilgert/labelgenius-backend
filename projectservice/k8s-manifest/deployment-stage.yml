@@ -72,6 +72,16 @@ spec:
                 secretKeyRef:
                   name: env-secret
                   key: EventHubStorage__ContainerProjectEvents
+            - name: ServiceBus__QueueName
+              valueFrom:
+                secretKeyRef:
+                  name: env-secret
+                  key: ServiceBus__QueueName
+            - name: ServiceBus__ConnectionString
+              valueFrom:
+                secretKeyRef:
+                  name: env-secret
+                  key: ServiceBus__ConnectionString
           volumeMounts:
             - name: json-secret-volume
               mountPath: /var/secret
