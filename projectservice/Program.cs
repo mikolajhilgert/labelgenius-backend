@@ -18,6 +18,7 @@ builder.Services.AddSingleton<IMongoClient>(s =>
 
 builder.Services.AddScoped<ILabelService, LabelService>();
 builder.Services.AddScoped<IProjectService, ProjectService>();
+builder.Services.AddScoped<IProjectInvitationService, ProjectInvitationService>();
 builder.Services.AddScoped<IBlobStorageUtils, BlobStorageUtils>();
 builder.Services.AddHostedService<ProjectEventService>();
 

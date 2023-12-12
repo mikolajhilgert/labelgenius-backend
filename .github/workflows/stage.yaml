@@ -7,6 +7,7 @@ on:
     paths:
       - "userservice/**"
       - "projectservice/**"
+      - "communicationservice/**"
 
 jobs:
   build:
@@ -149,6 +150,13 @@ jobs:
           cd ./projectservice
           docker build -t $DOCKER_USERNAME/projectservice:latest --build-arg GITHUB_USERNAME=$GITHUB_USERNAME --build-arg GITHUB_TOKEN=$GITHUB_TOKEN .
           docker push $DOCKER_USERNAME/projectservice:latest
+
+      - name: Deploy CommunicationService to DockerHub
+        if: steps.changes.outputs.communicationservice == 'true'
+        run: |
+          cd ./communicationservice
+          docker build -t $DOCKER_USERNAME/communicationservice:latest --build-arg GITHUB_USERNAME=$GITHUB_USERNAME --build-arg GITHUB_TOKEN=$GITHUB_TOKEN .
+          docker push $DOCKER_USERNAME/communicationservice:latest
 
   deploy:
     runs-on: ubuntu-latest

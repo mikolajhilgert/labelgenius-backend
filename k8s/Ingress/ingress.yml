@@ -1,3 +1,5 @@
+Sure, here’s how you can add CORS configuration to your Ingress rule:
+
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -7,6 +9,10 @@ metadata:
     nginx.ingress.kubernetes.io/use-regex: "true"
     nginx.ingress.kubernetes.io/rewrite-target: ""
     cert-manager.io/cluster-issuer: "letsencrypt"
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+    nginx.ingress.kubernetes.io/cors-allow-origin: "https://labelgenius.vercel.app"
+    nginx.ingress.kubernetes.io/cors-allow-methods: "PUT, GET, POST, OPTIONS, DELETE"
+    nginx.ingress.kubernetes.io/cors-allow-headers: "DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type"
 spec:
   tls:
     - hosts:

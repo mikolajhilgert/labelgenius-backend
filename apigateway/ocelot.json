@@ -2,7 +2,7 @@
   "Routes": [
     {
       "UpstreamPathTemplate": "/api/auth/login",
-      "UpstreamHttpMethod": ["Post"],
+      "UpstreamHttpMethod": [ "Post" ],
 
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
@@ -19,7 +19,7 @@
     },
     {
       "UpstreamPathTemplate": "/api/auth/logout",
-      "UpstreamHttpMethod": ["Post"],
+      "UpstreamHttpMethod": [ "Post" ],
 
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
@@ -36,7 +36,7 @@
     },
     {
       "UpstreamPathTemplate": "/api/auth/reset_password",
-      "UpstreamHttpMethod": ["Post"],
+      "UpstreamHttpMethod": [ "Post" ],
 
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
@@ -53,7 +53,7 @@
     },
     {
       "UpstreamPathTemplate": "/api/auth/register",
-      "UpstreamHttpMethod": ["Post"],
+      "UpstreamHttpMethod": [ "Post" ],
 
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
@@ -70,7 +70,7 @@
     },
     {
       "UpstreamPathTemplate": "/api/me/delete",
-      "UpstreamHttpMethod": ["Post"],
+      "UpstreamHttpMethod": [ "Post" ],
 
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
@@ -87,7 +87,7 @@
     },
     {
       "UpstreamPathTemplate": "/api/auth/status",
-      "UpstreamHttpMethod": ["Get"],
+      "UpstreamHttpMethod": [ "Get" ],
 
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
@@ -104,7 +104,7 @@
     },
     {
       "UpstreamPathTemplate": "/api/project/create",
-      "UpstreamHttpMethod": ["Post"],
+      "UpstreamHttpMethod": [ "Post" ],
 
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
@@ -121,7 +121,7 @@
     },
     {
       "UpstreamPathTemplate": "/api/project/update",
-      "UpstreamHttpMethod": ["Put"],
+      "UpstreamHttpMethod": [ "Put" ],
 
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
@@ -138,7 +138,7 @@
     },
     {
       "UpstreamPathTemplate": "/api/project/get",
-      "UpstreamHttpMethod": ["Get"],
+      "UpstreamHttpMethod": [ "Get" ],
 
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
@@ -155,7 +155,7 @@
     },
     {
       "UpstreamPathTemplate": "/api/project/delete",
-      "UpstreamHttpMethod": ["Delete"],
+      "UpstreamHttpMethod": [ "Delete" ],
 
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
@@ -172,7 +172,7 @@
     },
     {
       "UpstreamPathTemplate": "/api/project/getAll",
-      "UpstreamHttpMethod": ["Get"],
+      "UpstreamHttpMethod": [ "Get" ],
 
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
@@ -189,7 +189,7 @@
     },
     {
       "UpstreamPathTemplate": "/api/project/label/save",
-      "UpstreamHttpMethod": ["Post"],
+      "UpstreamHttpMethod": [ "Post" ],
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
@@ -205,7 +205,7 @@
     },
     {
       "UpstreamPathTemplate": "/api/project/label/deleteAll",
-      "UpstreamHttpMethod": ["Delete"],
+      "UpstreamHttpMethod": [ "Delete" ],
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
@@ -221,7 +221,7 @@
     },
     {
       "UpstreamPathTemplate": "/api/project/label/delete",
-      "UpstreamHttpMethod": ["Delete"],
+      "UpstreamHttpMethod": [ "Delete" ],
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
@@ -237,7 +237,7 @@
     },
     {
       "UpstreamPathTemplate": "/api/project/label/get",
-      "UpstreamHttpMethod": ["Get"],
+      "UpstreamHttpMethod": [ "Get" ],
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
@@ -253,7 +253,7 @@
     },
     {
       "UpstreamPathTemplate": "/api/project/label/getAll",
-      "UpstreamHttpMethod": ["Get"],
+      "UpstreamHttpMethod": [ "Get" ],
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
@@ -266,6 +266,22 @@
       },
       "DownstreamPathTemplate": "/api/project/label/getAll",
       "DownstreamHttpMethod": "GET"
+    },
+    {
+      "UpstreamPathTemplate": "/api/project/invite",
+      "UpstreamHttpMethod": [ "Post" ],
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "projectservice",
+          "Port": 80
+        }
+      ],
+      "LoadBalancerOptions": {
+        "Type": "RoundRobin"
+      },
+      "DownstreamPathTemplate": "/api/project/invite",
+      "DownstreamHttpMethod": "POST"
     }
   ],
   "GlobalConfiguration": {

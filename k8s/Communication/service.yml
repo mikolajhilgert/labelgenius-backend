@@ -1,0 +1,9 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: communication-service
+  namespace: ingress-basic
+spec:
+  selector:
+    app: communication-service
+  type: ClusterIP

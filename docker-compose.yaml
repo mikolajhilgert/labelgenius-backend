@@ -40,5 +40,14 @@ services:
     networks:
       - backend
 
+  communicationservice:
+    build:
+      context: ./communicationservice
+      dockerfile: Dockerfile
+    volumes:
+      - ./communicationservice/appsettings.json:/app/appsettings.json
+    networks:
+      - backend
+
 networks:
   backend:

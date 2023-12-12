@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: communication-service
+  namespace: ingress-basic
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: communication-service
+  template:
+    metadata:
+      labels:
+        app: communication-service
+    spec:
+      containers:
+        - name: communicationervice
+          image: zstrox/communicationservice:latest
+          ports:
+            - containerPort: 80
+              protocol: TCP
+          env:
+            - name: EventHubStorage__ContainerProjectEvents
+              valueFrom:
+                secretKeyRef:
+                  name: env-secret
+                  key: EventHubStorage__ContainerProjectEvents
+          volumeMounts:
+            - name: json-secret-volume
+              mountPath: /var/secret
+          resources:
+            limits:
+              cpu: 500m
+              memory: 500M
+            requests:
+              cpu: 50m
+              memory: 50M
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          imagePullPolicy: Always
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      nodeSelector:
+        kubernetes.io/os: linux
+      securityContext: {}
+      schedulerName: default-scheduler
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600
