@@ -27,12 +27,12 @@ while (true)
 
         ProjectInvitation message = JsonConvert.DeserializeObject<ProjectInvitation>(Encoding.UTF8.GetString(receivedMessage.Body));
 
-        logger.LogInformation(receivedMessage.Body.ToString() + " : " + "has been received");
+        logger.LogInformation(receivedMessage.Body.ToString() + "" + "has been received");
 
         await receiver.CompleteMessageAsync(receivedMessage);
     }
     catch (Exception ex)
     {
-        logger.LogError(ex.Message);
+        logger.LogWarning(ex.Message);
     }
 }
