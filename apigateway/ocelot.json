@@ -1,287 +1,34 @@
 {
   "Routes": [
     {
-      "UpstreamPathTemplate": "/api/auth/login",
-      "UpstreamHttpMethod": [ "Post" ],
-
+      "UpstreamHttpMethod": ["Get", "Post", "Put", "Delete"],
+      "UpstreamPathTemplate": "/api/auth/{everything}",
+      "DownstreamPathTemplate": "/api/auth/{everything}",
       "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "userservice",
-          "Port": 80
-        }
-      ],
+      "DownstreamHostAndPorts": [{ "Host": "userservice", "Port": 80 }],
       "LoadBalancerOptions": {
         "Type": "RoundRobin"
-      },
-      "DownstreamPathTemplate": "/api/auth/login",
-      "DownstreamHttpMethod": "POST"
+      }
     },
     {
-      "UpstreamPathTemplate": "/api/auth/logout",
-      "UpstreamHttpMethod": [ "Post" ],
-
+      "UpstreamHttpMethod": ["Get", "Post", "Put", "Delete"],
+      "UpstreamPathTemplate": "/api/me/{everything}",
+      "DownstreamPathTemplate": "/api/me/{everything}",
       "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "userservice",
-          "Port": 80
-        }
-      ],
+      "DownstreamHostAndPorts": [{ "Host": "userservice", "Port": 80 }],
       "LoadBalancerOptions": {
         "Type": "RoundRobin"
-      },
-      "DownstreamPathTemplate": "/api/auth/logout",
-      "DownstreamHttpMethod": "POST"
+      }
     },
     {
-      "UpstreamPathTemplate": "/api/auth/reset_password",
-      "UpstreamHttpMethod": [ "Post" ],
-
+      "UpstreamHttpMethod": ["Get", "Post", "Put", "Delete"],
+      "UpstreamPathTemplate": "/api/project/{everything}",
+      "DownstreamPathTemplate": "/api/project/{everything}",
       "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "userservice",
-          "Port": 80
-        }
-      ],
+      "DownstreamHostAndPorts": [{ "Host": "projectservice", "Port": 80 }],
       "LoadBalancerOptions": {
         "Type": "RoundRobin"
-      },
-      "DownstreamPathTemplate": "/api/auth/reset_password",
-      "DownstreamHttpMethod": "POST"
-    },
-    {
-      "UpstreamPathTemplate": "/api/auth/register",
-      "UpstreamHttpMethod": [ "Post" ],
-
-      "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "userservice",
-          "Port": 80
-        }
-      ],
-      "LoadBalancerOptions": {
-        "Type": "RoundRobin"
-      },
-      "DownstreamPathTemplate": "/api/auth/register",
-      "DownstreamHttpMethod": "POST"
-    },
-    {
-      "UpstreamPathTemplate": "/api/me/delete",
-      "UpstreamHttpMethod": [ "Post" ],
-
-      "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "userservice",
-          "Port": 80
-        }
-      ],
-      "LoadBalancerOptions": {
-        "Type": "RoundRobin"
-      },
-      "DownstreamPathTemplate": "/api/me/delete",
-      "DownstreamHttpMethod": "POST"
-    },
-    {
-      "UpstreamPathTemplate": "/api/auth/status",
-      "UpstreamHttpMethod": [ "Get" ],
-
-      "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "userservice",
-          "Port": 80
-        }
-      ],
-      "LoadBalancerOptions": {
-        "Type": "RoundRobin"
-      },
-      "DownstreamPathTemplate": "/api/auth/status",
-      "DownstreamHttpMethod": "GET"
-    },
-    {
-      "UpstreamPathTemplate": "/api/project/create",
-      "UpstreamHttpMethod": [ "Post" ],
-
-      "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "projectservice",
-          "Port": 80
-        }
-      ],
-      "LoadBalancerOptions": {
-        "Type": "RoundRobin"
-      },
-      "DownstreamPathTemplate": "/api/project/create",
-      "DownstreamHttpMethod": "POST"
-    },
-    {
-      "UpstreamPathTemplate": "/api/project/update",
-      "UpstreamHttpMethod": [ "Put" ],
-
-      "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "projectservice",
-          "Port": 80
-        }
-      ],
-      "LoadBalancerOptions": {
-        "Type": "RoundRobin"
-      },
-      "DownstreamPathTemplate": "/api/project/update",
-      "DownstreamHttpMethod": "PUT"
-    },
-    {
-      "UpstreamPathTemplate": "/api/project/get",
-      "UpstreamHttpMethod": [ "Get" ],
-
-      "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "projectservice",
-          "Port": 80
-        }
-      ],
-      "LoadBalancerOptions": {
-        "Type": "RoundRobin"
-      },
-      "DownstreamPathTemplate": "/api/project/get",
-      "DownstreamHttpMethod": "GET"
-    },
-    {
-      "UpstreamPathTemplate": "/api/project/delete",
-      "UpstreamHttpMethod": [ "Delete" ],
-
-      "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "projectservice",
-          "Port": 80
-        }
-      ],
-      "LoadBalancerOptions": {
-        "Type": "RoundRobin"
-      },
-      "DownstreamPathTemplate": "/api/project/delete",
-      "DownstreamHttpMethod": "DELETE"
-    },
-    {
-      "UpstreamPathTemplate": "/api/project/getAll",
-      "UpstreamHttpMethod": [ "Get" ],
-
-      "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "projectservice",
-          "Port": 80
-        }
-      ],
-      "LoadBalancerOptions": {
-        "Type": "RoundRobin"
-      },
-      "DownstreamPathTemplate": "/api/project/getAll",
-      "DownstreamHttpMethod": "GET"
-    },
-    {
-      "UpstreamPathTemplate": "/api/project/label/save",
-      "UpstreamHttpMethod": [ "Post" ],
-      "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "projectservice",
-          "Port": 80
-        }
-      ],
-      "LoadBalancerOptions": {
-        "Type": "RoundRobin"
-      },
-      "DownstreamPathTemplate": "/api/project/label/save",
-      "DownstreamHttpMethod": "POST"
-    },
-    {
-      "UpstreamPathTemplate": "/api/project/label/deleteAll",
-      "UpstreamHttpMethod": [ "Delete" ],
-      "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "projectservice",
-          "Port": 80
-        }
-      ],
-      "LoadBalancerOptions": {
-        "Type": "RoundRobin"
-      },
-      "DownstreamPathTemplate": "/api/project/label/deleteAll",
-      "DownstreamHttpMethod": "DELETE"
-    },
-    {
-      "UpstreamPathTemplate": "/api/project/label/delete",
-      "UpstreamHttpMethod": [ "Delete" ],
-      "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "projectservice",
-          "Port": 80
-        }
-      ],
-      "LoadBalancerOptions": {
-        "Type": "RoundRobin"
-      },
-      "DownstreamPathTemplate": "/api/project/label/delete",
-      "DownstreamHttpMethod": "DELETE"
-    },
-    {
-      "UpstreamPathTemplate": "/api/project/label/get",
-      "UpstreamHttpMethod": [ "Get" ],
-      "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "projectservice",
-          "Port": 80
-        }
-      ],
-      "LoadBalancerOptions": {
-        "Type": "RoundRobin"
-      },
-      "DownstreamPathTemplate": "/api/project/label/get",
-      "DownstreamHttpMethod": "GET"
-    },
-    {
-      "UpstreamPathTemplate": "/api/project/label/getAll",
-      "UpstreamHttpMethod": [ "Get" ],
-      "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "projectservice",
-          "Port": 80
-        }
-      ],
-      "LoadBalancerOptions": {
-        "Type": "RoundRobin"
-      },
-      "DownstreamPathTemplate": "/api/project/label/getAll",
-      "DownstreamHttpMethod": "GET"
-    },
-    {
-      "UpstreamPathTemplate": "/api/project/invite",
-      "UpstreamHttpMethod": [ "Post" ],
-      "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "projectservice",
-          "Port": 80
-        }
-      ],
-      "LoadBalancerOptions": {
-        "Type": "RoundRobin"
-      },
-      "DownstreamPathTemplate": "/api/project/invite",
-      "DownstreamHttpMethod": "POST"
+      }
     }
   ],
   "GlobalConfiguration": {

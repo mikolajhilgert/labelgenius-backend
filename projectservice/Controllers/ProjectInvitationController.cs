@@ -18,7 +18,7 @@ namespace projectservice.Controllers
         }
 
         [Authorize(Roles = "User")]
-        [HttpPost("")]
+        [HttpPost()]
         public async Task<IActionResult> InviteToProject(ProjectInvitationDto inviteDto)
         {
             try

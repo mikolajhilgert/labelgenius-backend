@@ -1,5 +1,6 @@
 ﻿using Azure;
 using Azure.Communication.Email;
+using communicationservice.Utils;
 
 namespace communicationservice.Services
 {
@@ -14,12 +15,18 @@ namespace communicationservice.Services
 
         public async Task<bool> SendProjectUserInvitation(string targetUser, string projectOwner, string inviteToken, string projectName, string projectId)
         {
+            var replacements = new Dictionary<string, string>
+            {
+                { "project_name", projectName },
+                { "project_link", "https://labelgenius.pics/api/project/invite/"+inviteToken }
+            };
+
             var emailSendOperation = await _emailClient.SendAsync(
                 WaitUntil.Completed,
                 _emailSenderAddress,
                 targetUser,
-                "\"<html><h1>Hello world via email.</h1l></html>\"",
-                "Hello world via email.");
+                subject: "You have been invited to a LabelGenius project!",
+                htmlContent: EmailTemplateProcessor.ProcessTemplate(replacements));
 
             return emailSendOperation.Value.Status.Equals(true);
         }
