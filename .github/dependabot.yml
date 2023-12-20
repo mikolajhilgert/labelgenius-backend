@@ -1,22 +1,22 @@
 version: 2
 updates:
-  - package-ecosystem: "nuget" # See documentation for possible values
+  - package-ecosystem: "nuget" 
     directory: "./apigateway"
     schedule:
-      interval: "weekly"
-  - package-ecosystem: "nuget" # See documentation for possible values
+      interval: "monthly"
+  - package-ecosystem: "nuget" 
     directory: "./projectservice"
     schedule:
-      interval: "weekly"
-  - package-ecosystem: "nuget" # See documentation for possible values
+      interval: "monthly"
+  - package-ecosystem: "nuget" 
     directory: "./userservice"
     schedule:
-      interval: "weekly"
-  - package-ecosystem: "nuget" # See documentation for possible values
+      interval: "monthly"
+  - package-ecosystem: "nuget" 
     directory: "./communicationservice"
     schedule:
-      interval: "weekly"
-  - package-ecosystem: "nuget" # See documentation for possible values
+      interval: "monthly"
+  - package-ecosystem: "nuget" 
     directory: "./authentication"
     schedule:
-      interval: "weekly"
+      interval: "monthly"
