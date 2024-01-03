@@ -31,7 +31,7 @@ namespace projectservice.Controllers
                     return BadRequest("User not logged in or does not exist");
                 }
 
-                var result = await _projectInvitationService.CreateProjectInvite(inviteDto);
+                var result = await _projectInvitationService.CreateProjectInvite(inviteDto, emailClaim.Value);
                 if (result.Result)
                 {
                     return Ok(result.Message);
@@ -41,6 +41,27 @@ namespace projectservice.Controllers
                     return BadRequest(result.Message);
                 }
 
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost("join")]
+        public async Task<IActionResult> JoinProject([FromQuery] string token)
+        {
+            try
+            {
+                var result = await _projectInvitationService.ConsumeProjectInvite(token);
+                if (result.Result)
+                {
+                    return Ok(result.Message);
+                }
+                else
+                {
+                    return BadRequest(result.Message);
+                }
             }
             catch (Exception ex)
             {

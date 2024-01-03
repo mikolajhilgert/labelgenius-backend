@@ -2,6 +2,7 @@
 using MongoDB.Driver;
 using projectservice.Dto;
 using projectservice.Models;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace projectservice.Services
 {
@@ -100,7 +101,7 @@ namespace projectservice.Services
         {
             try
             {
-                var (IsInProject, IsProjectCreator) = await _projectService.UserRoleInProject(projectId, userEmail);
+                var (IsInProject, _) = await _projectService.UserRoleInProject(projectId, userEmail);
                 if (IsInProject == false) return (false, "User is not the project owner.", new());
 
                 var filter = Builders<ImageLabels>.Filter.And(
@@ -129,7 +130,7 @@ namespace projectservice.Services
         {
             try
             {
-                var (IsInProject, IsProjectCreator) = await _projectService.UserRoleInProject(projectId, userEmail);
+                var (IsInProject, _) = await _projectService.UserRoleInProject(projectId, userEmail);
                 if (IsInProject == false) return (false, "User is not in the project", new());
 
                 var filter = Builders<ImageLabels>.Filter.And(
@@ -162,6 +163,35 @@ namespace projectservice.Services
             }
         }
 
+        public async Task<(bool Result, string Message, List<ImageLabelsDTO> Labels)> GetAllLabelsByProject(string projectId, string userEmail)
+        {
+            try
+            {
+                var (_, isProjectCreator) = await _projectService.UserRoleInProject(projectId, userEmail);
+                if (!isProjectCreator)
+                {
+                    return (false, "User is not the project creator", new());
+                }
+
+                var filter = Builders<ImageLabels>.Filter.Eq("projectId", ObjectId.Parse(projectId));
+                var projectLabels = await _labels.Find(filter).ToListAsync();
+
+                var imageLabelsDtoList = projectLabels.Select(imageLabel => new ImageLabelsDTO
+                {
+                    ProjectId = imageLabel.ProjectId.ToString(),
+                    ImageId = imageLabel.ImageId.ToString(),
+                    Creator = imageLabel.Creator,
+                    Labels = imageLabel.Labels.Select(ConvertLabelToDto).ToList(),
+                }).ToList();
+
+                return (true, string.Empty, imageLabelsDtoList);
+            }
+            catch (Exception ex)
+            {
+                return (false, ex.Message, new());
+            }
+        }
+
         public async Task RemoveLabelsFromDeletedUsersProject(string userEmail)
         {
             try
@@ -180,7 +210,6 @@ namespace projectservice.Services
             {
                 _logger.LogError(ex.Message);
             }
-
         }
 
         private static Label ConvertDtoToLabel(LabelDTO dto)

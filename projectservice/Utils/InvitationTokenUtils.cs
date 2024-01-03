@@ -5,23 +5,15 @@ namespace projectservice.Utils
 {
     public static class InvitationTokenUtil
     {
-        public static (string Token, string Secret) CreateInvitationToken(string inviteeEmail, string projectInvitedToId, string sender)
+        public static (string Token, string Secret) CreateInvitationToken(string inviteeEmail, string projectId, string owner)
         {
-            string tokenBase = $"{inviteeEmail};{sender};{projectInvitedToId}";
+            string tokenBase = $"{inviteeEmail};{owner};{projectId}";
             string secret = Guid.NewGuid().ToString();
             tokenBase += $";{secret}";
             return (tokenBase, secret);
         }
 
-        public static (string Token, string Secret) CreateInvitationForLink(string projectId, string sender)
-        {
-            string tokenBase = $"{sender};{projectId}";
-            string secret = Guid.NewGuid().ToString();
-            tokenBase += $";{secret}";
-            return (tokenBase, secret);
-        }
-
-        public static (string InviteeEmail, string Sender, string ProjectInvitedToId, string Secret) ParseInviteToken(string token)
+        public static (string InviteeEmail, string Sender, string ProjectId, string Secret) ParseInviteToken(string token)
         {
             string[] words = token.Split(';');
             return (words[0], words[1], words[2], words[3]);
@@ -47,7 +39,7 @@ namespace projectservice.Utils
 
         public static string Sha256Hash(string value)
         {
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new();
 
             using (SHA256 hash = SHA256.Create())
             {

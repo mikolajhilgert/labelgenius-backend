@@ -18,17 +18,17 @@ namespace communicationservice.Services
             var replacements = new Dictionary<string, string>
             {
                 { "project_name", projectName },
-                { "project_link", "https://labelgenius.pics/api/project/invite/"+inviteToken }
+                { "project_link", "https://labelgenius.pics/api/project/invite/join?token=" + inviteToken }
             };
 
-            var emailSendOperation = await _emailClient.SendAsync(
+            var emailSender = await _emailClient.SendAsync(
                 WaitUntil.Completed,
                 _emailSenderAddress,
                 targetUser,
                 subject: "You have been invited to a LabelGenius project!",
                 htmlContent: EmailTemplateProcessor.ProcessTemplate(replacements));
 
-            return emailSendOperation.Value.Status.Equals(true);
+            return emailSender.Value.Status.Equals(true);
         }
     }
 }
