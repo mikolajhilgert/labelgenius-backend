@@ -48,7 +48,7 @@ namespace projectservice.Controllers
             }
         }
 
-        [HttpPost("join")]
+        [HttpGet("join")]
         public async Task<IActionResult> JoinProject([FromQuery] string token)
         {
             try
@@ -56,7 +56,7 @@ namespace projectservice.Controllers
                 var result = await _projectInvitationService.ConsumeProjectInvite(token);
                 if (result.Result)
                 {
-                    return Ok(result.Message);
+                    return Redirect($"https://labelgenius.vercel.app/login");
                 }
                 else
                 {

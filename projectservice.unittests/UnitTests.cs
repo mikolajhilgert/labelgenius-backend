@@ -9,38 +9,38 @@ namespace projectservice.unittests
         public void ParseInviteToken_ReturnsValidResult()
         {
             // Arrange
-            string token = "invitee@example.com;sender123;project123;secret123";
+            string token = "testInviteeUser@example.com;testSender123;testProject123;testSecret123";
 
             // Act
             var result = InvitationTokenUtil.ParseInviteToken(token);
 
             // Assert
-            Assert.Equal("invitee@example.com", result.Item1);
-            Assert.Equal("sender123", result.Item2);
-            Assert.Equal("project123", result.Item3);
-            Assert.Equal("secret123", result.Item4);
+            Assert.Equal("testInviteeUser@example.com", result.Item1);
+            Assert.Equal("testSender123", result.Item2);
+            Assert.Equal("testProject123", result.Item3);
+            Assert.Equal("testSecret123", result.Item4);
         }
 
         [Fact]
         public void ParseInviteLink_ReturnsValidResult()
         {
             // Arrange
-            string token = "sender123;project123;secret123";
+            string token = "testSender123;testProject123;testSecret123";
 
             // Act
             var result = InvitationTokenUtil.ParseInviteLink(token);
 
             // Assert
-            Assert.Equal("sender123", result.Item1);
-            Assert.Equal("project123", result.Item2);
-            Assert.Equal("secret123", result.Item3);
+            Assert.Equal("testSender123", result.Item1);
+            Assert.Equal("testProject123", result.Item2);
+            Assert.Equal("testSecret123", result.Item3);
         }
 
         [Fact]
         public void Base64Encode_DecodesSuccessfully()
         {
             // Arrange
-            string plainText = "plainText";
+            string plainText = "testPlainText";
 
             // Act
             var encodedText = InvitationTokenUtil.Base64Encode(plainText);
@@ -55,7 +55,7 @@ namespace projectservice.unittests
         public void Sha256Hash_GeneratesHash()
         {
             // Arrange
-            string value = "value123";
+            string value = "testValue123";
 
             // Act
             var hash = InvitationTokenUtil.Sha256Hash(value);

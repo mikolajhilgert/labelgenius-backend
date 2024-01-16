@@ -1,12 +1,8 @@
-﻿using Google.Api.Gax.ResourceNames;
-using Microsoft.Extensions.Logging;
-using MongoDB.Bson;
+﻿using MongoDB.Bson;
 using MongoDB.Driver;
 using projectservice.Dto;
 using projectservice.Models;
 using projectservice.Utils;
-using System.Data.SqlTypes;
-using System.Text.RegularExpressions;
 
 namespace projectservice.Services
 {
@@ -125,6 +121,8 @@ namespace projectservice.Services
                         IsActive = project.IsActive,
                         CreationDate = project.CreationDate,
                         Images = project.ImageUrls,
+                        // Only give list of users if user is project creator
+                        LabellingUsers = (project.Creator == userEmail) ? project.LabellingUsers : new(),
                         ImageSasToken = await _blobStorage.GetContainerSASTokenAsync(projectId.ToString()),
                         UserIsOwner = project.Creator == userEmail
                     };

@@ -33,7 +33,8 @@ namespace projectservice.Services
         {
             try
             {
-                var (IsInProject, IsProjectCreator) = await _projectService.UserRoleInProject(invitationDto.ProjectId, userEmail);
+                var (_, IsProjectCreator) = await _projectService.UserRoleInProject(invitationDto.ProjectId, userEmail);
+                var (IsInProject, _) = await _projectService.UserRoleInProject(invitationDto.ProjectId, invitationDto.InviteeEmail);
 
                 if (!IsProjectCreator)
                 {

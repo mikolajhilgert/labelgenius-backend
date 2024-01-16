@@ -40,7 +40,8 @@ namespace projectservice.Dto
         public Dictionary<string, string> LabelClasses { get; set; } = new();
         public Dictionary<string, string> Images { get; set; } = new();
         public string ImageSasToken { get; set; } = string.Empty;
-        public DateTime CreationDate { get; set; } = DateTime.MinValue;
+        public DateTime CreationDate { get; set; } = DateTime.Today;
+        public List<string> LabellingUsers { get; set; } = new();
         public bool IsActive { get; set; } = true;
         public bool UserIsOwner { get; set; }
     }
