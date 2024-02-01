@@ -1,22 +1,22 @@
-version: 2
-updates:
-  - package-ecosystem: "nuget"
-    directory: "./apigateway"
-    schedule:
-      interval: "monthly"
-  - package-ecosystem: "nuget"
-    directory: "./projectservice"
-    schedule:
-      interval: "monthly"
-  - package-ecosystem: "nuget"
-    directory: "./userservice"
-    schedule:
-      interval: "monthly"
-  - package-ecosystem: "nuget"
-    directory: "./communicationservice"
-    schedule:
-      interval: "monthly"
-  - package-ecosystem: "nuget"
-    directory: "./authentication"
-    schedule:
-      interval: "monthly"
+# version: 2
+# updates:
+#   - package-ecosystem: "nuget"
+#     directory: "./apigateway"
+#     schedule:
+#       interval: "monthly"
+#   - package-ecosystem: "nuget"
+#     directory: "./projectservice"
+#     schedule:
+#       interval: "monthly"
+#   - package-ecosystem: "nuget"
+#     directory: "./userservice"
+#     schedule:
+#       interval: "monthly"
+#   - package-ecosystem: "nuget"
+#     directory: "./communicationservice"
+#     schedule:
+#       interval: "monthly"
+#   - package-ecosystem: "nuget"
+#     directory: "./authentication"
+#     schedule:
+#       interval: "monthly"
